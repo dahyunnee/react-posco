@@ -3,7 +3,7 @@ import storage from "redux-persist/lib/storage";
 import { persistReducer } from "redux-persist";
 import user from "./modules/user";
 // import { composeWithDevTools } from "@reduxjs/toolkit/dist/devtoolsExtension";
-import { composeWithDevTools } from "redux-devtools-extension";
+//import { composeWithDevTools } from "redux-devtools-extension";
 // import persistReducer from "redux-persist/es/persistReducer";
 import { legacy_createStore as createStore, applyMiddleware } from "redux";
 import thunk from "redux-thunk";
