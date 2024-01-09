@@ -17,6 +17,7 @@
     "@types/react-dom": "^18.2.18",
     "@types/redux-persist": "^4.3.1",
     "axios": "^1.6.5",
+    "expo-linear-gradient": "^12.5.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.12.0",

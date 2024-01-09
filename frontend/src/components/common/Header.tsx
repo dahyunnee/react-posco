@@ -1,4 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
+import { LinearGradient } from 'expo-linear-gradient'
 import styled from 'styled-components';
 import { IconUserName, BackButton } from '../../assets/icons';
 import { useNavigate } from 'react-router-dom';
@@ -53,7 +54,8 @@ const HeaderWrapper = styled.div`
     height: 4.6rem;
     padding: 0.8rem 1.3rem;
 
-    background-color: ${(props) => props.theme.color.background};
+    background: linear-gradient(to bottom, ${(props) => props.theme.color.yellow00}, ${(props) => props.theme.color.white});
+    //background-color: ${(props) => props.theme.color.yellow00};
     z-index: 10;
 `
 
@@ -72,8 +74,8 @@ const HeaderBackButton = styled.button`
     width: 6rem;
     height: 4rem;
 
-    background-color: ${(props) => props.theme.color.background};
-    border: 0.05rem solid ${(props) => props.theme.color.background};
+    background: none;
+    border: none;
 `;
 
 const HeaderMyPageButton = styled.button`
@@ -84,8 +86,8 @@ const HeaderMyPageButton = styled.button`
     width: 10rem;
     height: 4rem;
 
-    background-color: ${(props) => props.theme.color.background};
-    border: 0.05rem solid ${(props) => props.theme.color.background};
+    background: none;
+    border: none;
 `;
 
 const HeaderToday = styled.h1`
