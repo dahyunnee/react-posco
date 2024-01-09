@@ -30,8 +30,13 @@
 // export default store;
 import { configureStore } from "@reduxjs/toolkit";
 import storage from "redux-persist/lib/storage";
-import { persistReducer, persistStore } from "redux-persist";
-import userReducer from "./modules/user";
+import { persistReducer } from "redux-persist";
+import user from "./modules/user";
+// import { composeWithDevTools } from "@reduxjs/toolkit/dist/devtoolsExtension";
+//import { composeWithDevTools } from "redux-devtools-extension";
+// import persistReducer from "redux-persist/es/persistReducer";
+import { legacy_createStore as createStore, applyMiddleware } from "redux";
+import thunk from "redux-thunk";
 
 // persistConfig 정의
 const persistConfig = {
