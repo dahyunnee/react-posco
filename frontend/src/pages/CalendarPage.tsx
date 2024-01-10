@@ -136,8 +136,8 @@ const Layout = styled.div`
 `;
 const Left = styled.div`
     width:45%;
-    padding:1%
-    margin-right:1%
+    padding:1%;
+    margin-right:1%;
 `;
 const Right = styled.div`
     width:45%;
