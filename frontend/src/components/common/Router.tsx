@@ -3,7 +3,7 @@ import EmotionResult from '../../pages/EmotionResult';
 import MainPage from '../../pages/MainPage'; 
 
 function Router() {
-    return(
+    return (
         <Routes>
             <Route path='/' element={<MainPage />}></Route>
             <Route path='/result/:diaryId' element={<EmotionResult/>}></Route>
