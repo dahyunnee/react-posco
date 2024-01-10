@@ -9,7 +9,6 @@ function Header() {
     const navigate = useNavigate();
 
     const currentMonth = getCurrentMonth();
-    const currentDate = getCurrentDay();
     
     return (
         <HeaderWrapper>
@@ -28,9 +27,9 @@ function Header() {
                     <HeaderBackButton onClick={() => navigate(-1)}>
                         <BackButton />
                     </HeaderBackButton>
-                    <HeaderToday>
-                        {currentDate}
-                    </HeaderToday>
+                    <HeaderEmotionResult>
+                        오늘의 일기 감정 분석 결과
+                    </HeaderEmotionResult>
                     <HeaderMyPageButton onClick={() => navigate('/')}>
                         <IconUserName />
                     </HeaderMyPageButton>
@@ -94,7 +93,7 @@ const HeaderMyPageButton = styled.button`
     border: none;
 `;
 
-const HeaderToday = styled.h1`
+const HeaderEmotionResult : any = styled.h1`
     color: ${(props) => props.theme.color.black};
     font-size: 2.5rem;
     font-weight: ${(props) => props.theme.fontWeight.bold};
@@ -110,37 +109,3 @@ const getCurrentMonth = () => {
 
     return monthNames[currentDate.getMonth()];
 };
-
-const getCurrentDay = () => {
-    const currentDate = new Date();
-
-    // 월 이름 매핑
-    const monthNames = {
-        January: '1월',
-        February: '2월',
-        March: '3월',
-        April: '4월',
-        May: '5월',
-        June: '6월',
-        July: '7월',
-        August: '8월',
-        September: '9월',
-        October: '10월',
-        November: '11월',
-        December: '12월'
-    };
-
-  // 날짜 형식화
-    const formattedDate = new Intl.DateTimeFormat('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        weekday: 'long'
-    }).format(currentDate);
-
-    const [weekday, month, day, year] = formattedDate.split(/,?\s/);
-    const newMonth = monthNames[month as keyof typeof monthNames]; 
-    const formattedResult = `${year}년 ${newMonth} ${day}일 ${weekday}`;
-
-    return formattedResult;
-}
