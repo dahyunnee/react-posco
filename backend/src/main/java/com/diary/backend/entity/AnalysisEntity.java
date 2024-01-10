@@ -2,9 +2,17 @@ package com.diary.backend.entity;
 
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "Analysis")
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class AnalysisEntity {
 
   @Id

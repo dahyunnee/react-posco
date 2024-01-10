@@ -2,6 +2,10 @@ package com.diary.backend.entity;
 
 import com.diary.backend.dto.NewDiaryDto;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CurrentTimestamp;
 
 import java.sql.Timestamp;
@@ -9,6 +13,10 @@ import java.util.Date;
 
 @Entity
 @Table(name = "Diary")
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class DiaryEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

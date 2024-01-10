@@ -1,10 +1,18 @@
 package com.diary.backend.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CurrentTimestamp;
 
 @Entity
 @Table(name = "Chatting")
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class ChattingEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

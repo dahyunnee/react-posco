@@ -1,9 +1,17 @@
 package com.diary.backend.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "User")
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class UserEntity {
 
   @Id
@@ -21,25 +29,6 @@ public class UserEntity {
   private String email;
 
 
-  public long geId() {
-    return id;
-  }
-
-  public String getNickName() {
-    return nickName;
-  }
-  public String getUserId() {
-    return userId;
-  }
-  public String getPassword() {
-    return password;
-  }
-  public String getName() {
-    return name;
-  }
-  public String getEmail() {
-    return email;
-  }
   public void registerNewUser(String nickName, String userId, String password, String name, String email) {
     this.nickName = nickName;
     this.userId = userId;

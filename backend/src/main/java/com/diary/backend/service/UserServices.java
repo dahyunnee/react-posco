@@ -14,7 +14,7 @@ public class UserServices {
         this.userRepository = userRepository;
     }
     public LoginResponse LoginVerify(String userId, String password){
-        UserEntity userEntity = userRepository.findByIdentity(userId);
+        UserEntity userEntity = userRepository.findByUserId(userId);
         LoginResponse loginResponse;
         if(userEntity == null){
             loginResponse = new LoginResponse(UserStatus.NOT_EXIST_IDENTITY, null);
@@ -29,7 +29,7 @@ public class UserServices {
     }
 
     public UserStatus RegisterNewUser(String nickName, String identity, String password, String name, String email) {
-        if(userRepository.findByIdentity(identity) != null ){
+        if(userRepository.findByUserId(identity) != null ){
             return UserStatus.ALREADY_EXIST_IDENTITY;
         }
         else if(userRepository.findByNickName(nickName) != null){
