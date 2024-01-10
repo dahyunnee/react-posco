@@ -1,9 +1,17 @@
 package com.diary.backend.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "Emotion")
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class EmotionEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

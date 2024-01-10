@@ -45,7 +45,7 @@ public class DiaryServices {
 
     public DiaryStatus registerDiary(NewDiaryDto newDiaryDto){
         DiaryEntity diaryEntity = new DiaryEntity();
-        UserEntity userEntity = userRepository.findByIdentity(newDiaryDto.userIdentity);
+        UserEntity userEntity = userRepository.findByUserId(newDiaryDto.userIdentity);
         if(userEntity == null){
             return DiaryStatus.INVALID_USER_ID;
         }
@@ -90,12 +90,12 @@ public class DiaryServices {
     }
 
     public ResponseEntity<?> getDiaryList(String userId, LocalDate yyyymm) {
-        UserEntity userEntity = userRepository.findByIdentity(userId);
+        UserEntity userEntity = userRepository.findByUserId(userId);
         if(userEntity == null){
             return ResponseEntity.badRequest().body(DiaryStatus.INVALID_USER_ID);
         }
         DiaryListDto diaryListDto = new DiaryListDto();
-        List<DiaryEntity> diaryEntityList = diaryRepository.findByAuthor(userRepository.findByIdentity(userId));
+        List<DiaryEntity> diaryEntityList = diaryRepository.findByAuthor(userRepository.findByUserId(userId));
         for(DiaryEntity diaryEntity : diaryEntityList){
             AnalysisEntity analysisEntity = analysisRepository.findByDiaryId(diaryEntity);
             EmotionEntity emotionEntity = emotionRepository.findByAnalysisId(analysisEntity);
