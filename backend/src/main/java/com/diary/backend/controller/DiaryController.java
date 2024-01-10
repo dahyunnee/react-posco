@@ -3,6 +3,7 @@ package com.diary.backend.controller;
 import com.diary.backend.Enums.DiaryStatus;
 import com.diary.backend.dto.NewDiaryDto;
 import com.diary.backend.dto.WeatherResponse;
+import com.diary.backend.entity.DiaryEntity;
 import com.diary.backend.repository.UserRepository;
 import com.diary.backend.service.DiaryServices;
 import jakarta.servlet.http.HttpSession;
@@ -29,13 +30,17 @@ public class DiaryController {
 
     @PostMapping("/diary/register")
     public ResponseEntity<String> handleDiaryRegister(@RequestBody NewDiaryDto newDiaryDto, HttpSession session){
-        DiaryStatus status = diaryServices.registerDiary(newDiaryDto);
-        if(status == DiaryStatus.SUCESS){
-            return ResponseEntity.ok("success");
+        DiaryEntity newDiary = diaryServices.registerDiary(newDiaryDto);
+        if(newDiary == null){
+            return ResponseEntity.badRequest().body(DiaryStatus.DIARY_REGISTER_ERROR.toString());
         }
-        else{
-            return ResponseEntity.badRequest().body(status.toString());
+
+        try {
+            DiaryStatus status = diaryServices.registerAnalysis(newDiary);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        return ResponseEntity.ok().body(DiaryStatus.SUCESS.toString());
     }
 
     @GetMapping("/diary/weather")

@@ -43,19 +43,95 @@ public class DiaryServices {
         this.webClient = webClientBuilder.build();
     }
 
-    public DiaryStatus registerDiary(NewDiaryDto newDiaryDto){
+    public DiaryEntity registerDiary(NewDiaryDto newDiaryDto){
         DiaryEntity diaryEntity = new DiaryEntity();
         UserEntity userEntity = userRepository.findByIdentity(newDiaryDto.userIdentity);
         if(userEntity == null){
-            return DiaryStatus.INVALID_USER_ID;
+            return null;
         }
         if(newDiaryDto.date == null || newDiaryDto.date.isAfter(LocalDate.now())){
-            return DiaryStatus.INVALID_DIARY_DATE;
+            return null;
         }
         Timestamp timestamp = Timestamp.valueOf(newDiaryDto.date.atStartOfDay());
         diaryEntity.setNewDiary(userEntity, timestamp, newDiaryDto.weather, newDiaryDto.content);
         diaryRepository.save(diaryEntity);
+        return diaryEntity;
+    }
+
+    public DiaryStatus registerAnalysis(DiaryEntity newDiary) throws JsonProcessingException {
+        if(newDiary == null){
+            return DiaryStatus.INVALID_DIARY_CONTEXT;
+        }
+        String resAnalysis = "";
+        try{
+            resAnalysis = webClient.get()
+                    .uri(uriBuilder -> uriBuilder
+                            .scheme("https")
+                            .host("127.0.0.1:5000")
+                            .path("/chatbot")
+                            .queryParam("msg", newDiary.getContent())
+                            .build())
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .block();
+        } catch (WebClientResponseException e) {
+            return DiaryStatus.API_PROCESSING_ERROR;
+        }
+        ObjectMapper objectMapper = new ObjectMapper();
+        AIChatbotResDto aiChatbotResDto = objectMapper.readValue(resAnalysis, AIChatbotResDto.class);
+        if(aiChatbotResDto == null){
+            return DiaryStatus.API_RESPONSE_COVERT_ERROR;
+        }
+        AnalysisEntity analysisEntity = new AnalysisEntity();
+        analysisEntity.setDiaryId(newDiary);
+        analysisEntity.setResultComment(aiChatbotResDto.resultComment);
+        analysisRepository.save(analysisEntity);
+
+        EmotionEntity emotionEntity = getEmotionSet(analysisEntity, newDiary);
+        if(emotionEntity == null){
+            return DiaryStatus.API_RESPONSE_COVERT_ERROR;
+        }
+
         return DiaryStatus.SUCESS;
+    }
+
+    public EmotionEntity getEmotionSet(AnalysisEntity analysis, DiaryEntity newDiary) throws JsonProcessingException{
+        if(newDiary == null){
+            return null;
+        }
+        String resEmotion = "";
+        try{
+            resEmotion = webClient.get()
+                    .uri(uriBuilder -> uriBuilder
+                            .scheme("https")
+                            .host("127.0.0.1:5000")
+                            .path("/emotion")
+                            .queryParam("diary", newDiary.getContent())
+                            .build())
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .block();
+        } catch (WebClientResponseException e) {
+            return null;
+        }
+        ObjectMapper objectMapper = new ObjectMapper();
+        AIEmotionResDto aiEmotionResDto = objectMapper.readValue(resEmotion, AIEmotionResDto.class);
+        if(aiEmotionResDto == null){
+            return null;
+        }
+        EmotionEntity emotionEntity = new EmotionEntity();
+        emotionEntity.setAnalysisId(analysis);
+        emotionEntity.setFear(aiEmotionResDto.fear);
+        emotionEntity.setSurprised(aiEmotionResDto.surprised);
+        emotionEntity.setAnger(aiEmotionResDto.anger);
+        emotionEntity.setSadness(aiEmotionResDto.sadness);
+        emotionEntity.setNeutrality(aiEmotionResDto.neutrality);
+        emotionEntity.setHappiness(aiEmotionResDto.happiness);
+        emotionEntity.setDisgust(aiEmotionResDto.disgust);
+
+        emotionRepository.save(emotionEntity);
+
+        return emotionEntity;
     }
 
     public ResponseEntity<?> getWeather(float latitude, float longitude) throws JsonProcessingException {
