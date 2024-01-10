@@ -51,7 +51,7 @@ const LoginBox = () => {
     <Box
       component="form"
       sx={{
-        "& .MuiFormControl-root": { m: 1, width: "25ch", display: "flex" },
+        "& .MuiFormControl-root": { m: 1, width: "25ch", display: "flex", fontFamily: "OmyuPretty" },
       }}
       noValidate
       autoComplete="off"
