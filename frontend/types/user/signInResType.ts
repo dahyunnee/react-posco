@@ -1,7 +1,6 @@
-export type SignupType = {
+export type SigninResType = {
     id: string;
-    name: string;
-    email: string;
     password: string;
     nickName: string;
+    email: string;
   };

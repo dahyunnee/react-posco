@@ -2,7 +2,7 @@ import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import storage from "redux-persist/lib/storage";
 import { persistReducer } from "redux-persist";
 import user from "./modules/user";
-// import { composeWithDevTools } from "@reduxjs/toolkit/dist/devtoolsExtension";
+import { composeWithDevTools } from "@reduxjs/toolkit/dist/devtoolsExtension";
 // import persistReducer from "redux-persist/es/persistReducer";
 import { legacy_createStore as createStore, applyMiddleware } from "redux";
 import thunk from "redux-thunk";
@@ -19,8 +19,8 @@ const rootReducer = combineReducers({
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
-const store = createStore(
-  persistedReducer,
+const store = configureStore({
+  reducer: persistedReducer,}
   // composeWithDevTools(applyMiddleware(thunk))
 );
 
