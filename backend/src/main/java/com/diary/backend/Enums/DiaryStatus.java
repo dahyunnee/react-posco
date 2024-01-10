@@ -1,7 +1,7 @@
 package com.diary.backend.Enums;
 
 public enum DiaryStatus {
-    SUCESS,
+    SUCCESS,
     INVALID_DIARY_DATE,
     INVALID_USER_ID,
     INVALID_LATITUDE_OR_LONGITUDE,

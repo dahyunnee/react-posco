@@ -34,82 +34,38 @@ public class EmotionEntity {
   @Column(name = "disgust")
   private long disgust;
 
-
-  public long getEmotionId() {
-    return emotionId;
-  }
-
   public void setEmotionId(long emotionId) {
     this.emotionId = emotionId;
-  }
-
-
-  public AnalysisEntity getAnalysisId() {
-    return analysisId;
   }
 
   public void setAnalysisId(AnalysisEntity analysisId) {
     this.analysisId = analysisId;
   }
 
-
-  public long getFear() {
-    return fear;
-  }
-
   public void setFear(long fear) {
     this.fear = fear;
-  }
-
-
-  public long getSurprised() {
-    return surprised;
   }
 
   public void setSurprised(long surprised) {
     this.surprised = surprised;
   }
 
-
-  public long getAnger() {
-    return anger;
-  }
-
   public void setAnger(long anger) {
     this.anger = anger;
-  }
-
-
-  public long getSadness() {
-    return sadness;
   }
 
   public void setSadness(long sadness) {
     this.sadness = sadness;
   }
 
-
-  public long getNeutrality() {
-    return neutrality;
-  }
-
   public void setNeutrality(long neutrality) {
     this.neutrality = neutrality;
-  }
-
-
-  public long getHappiness() {
-    return happiness;
   }
 
   public void setHappiness(long happiness) {
     this.happiness = happiness;
   }
 
-
-  public long getDisgust() {
-    return disgust;
-  }
 
   public void setDisgust(long disgust) {
     this.disgust = disgust;

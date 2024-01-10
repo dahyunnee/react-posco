@@ -40,7 +40,7 @@ public class DiaryController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return ResponseEntity.ok().body(DiaryStatus.SUCESS.toString());
+        return ResponseEntity.ok().body(DiaryStatus.SUCCESS.toString());
     }
 
     @GetMapping("/diary/weather")

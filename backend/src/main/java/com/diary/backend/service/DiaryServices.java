@@ -14,11 +14,14 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import reactor.core.publisher.Mono;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
@@ -64,13 +67,15 @@ public class DiaryServices {
         }
         String resAnalysis = "";
         try{
-            resAnalysis = webClient.get()
+            resAnalysis = webClient.post()
                     .uri(uriBuilder -> uriBuilder
-                            .scheme("https")
-                            .host("127.0.0.1:5000")
+                            .scheme("http")
+                            .host("127.0.0.1")
+                            .port(5000)
                             .path("/chatbot")
-                            .queryParam("msg", newDiary.getContent())
                             .build())
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(BodyInserters.fromValue("{\"msg\" : \""+ newDiary.getContent() +"\"}"))
                     .retrieve()
                     .bodyToMono(String.class)
                     .block();
@@ -92,7 +97,7 @@ public class DiaryServices {
             return DiaryStatus.API_RESPONSE_COVERT_ERROR;
         }
 
-        return DiaryStatus.SUCESS;
+        return DiaryStatus.SUCCESS;
     }
 
     public EmotionEntity getEmotionSet(AnalysisEntity analysis, DiaryEntity newDiary) throws JsonProcessingException{
@@ -101,13 +106,15 @@ public class DiaryServices {
         }
         String resEmotion = "";
         try{
-            resEmotion = webClient.get()
+            resEmotion = webClient.post()
                     .uri(uriBuilder -> uriBuilder
-                            .scheme("https")
-                            .host("127.0.0.1:5000")
+                            .scheme("http")
+                            .host("127.0.0.1")
+                            .port(5000)
                             .path("/emotion")
-                            .queryParam("diary", newDiary.getContent())
                             .build())
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(BodyInserters.fromValue("{\"diary\": \""+ newDiary.getContent() +"\"}"))
                     .retrieve()
                     .bodyToMono(String.class)
                     .block();

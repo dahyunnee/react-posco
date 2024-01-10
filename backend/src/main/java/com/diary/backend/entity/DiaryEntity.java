@@ -24,10 +24,10 @@ public class DiaryEntity {
   @ManyToOne
   @JoinColumn(name = "author", nullable = false)
   private UserEntity author;
-  @CurrentTimestamp
+
   @Temporal(TemporalType.TIMESTAMP)
-  @Column(name = "writeDate")
-  private java.sql.Timestamp writeDate;
+  @Column(name = "write_date")
+  private Timestamp writeDate;
   @Column(name = "weather")
   private String weather;
   @Column(name = "content")
@@ -43,23 +43,4 @@ public class DiaryEntity {
     this.content = content;
   }
 
-  public long getDiaryId() {
-    return diaryId;
-  }
-
-  public UserEntity getAuthor() {
-    return author;
-  }
-
-  public java.sql.Timestamp getWriteDate() {
-    return writeDate;
-  }
-
-  public String getWeather() {
-    return weather;
-  }
-
-  public String getContent() {
-    return content;
-  }
 }
