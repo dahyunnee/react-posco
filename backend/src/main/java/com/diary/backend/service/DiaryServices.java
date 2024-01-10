@@ -48,7 +48,7 @@ public class DiaryServices {
 
     public DiaryEntity registerDiary(NewDiaryDto newDiaryDto){
         DiaryEntity diaryEntity = new DiaryEntity();
-        UserEntity userEntity = userRepository.findByUserId(newDiaryDto.userIdentity);
+        UserEntity userEntity = userRepository.findByUserId(newDiaryDto.userId);
         if(userEntity == null){
             return null;
         }
