@@ -7,6 +7,12 @@ const color = {
     background: '#FFFAED',
     black: '#000000',
     white: '#ffffff',
+    progress_green: '#ABDBAC',
+    progress_orange: '#FFCEA3',
+    progress_purple: '#C4A8FF',
+    progress_light_pink: '#FFC1EB',
+    progress_pink: '#FFAFA7',
+    progress_brown: '#D9AA76'
 };
 
 const fontWeight = {

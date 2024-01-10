@@ -3,11 +3,29 @@ import { styled } from 'styled-components';
 function InnerDiaryResult(props: any) {
     return (
         <InnerDiaryResultContainer>
-            <div>
-                dskfksa <br/>
-                dsafjkdsa
-            </div>
-            
+            <DiaryContextWrapper>    
+                <DiaryContext>
+                    test test test test test test test test test test test test test test test test test test test test test test test test test test  <br/>
+                    test <br/>
+                    test <br/>
+                    test <br/>
+                    test <br/>
+                    test <br/>
+                    test <br/>
+                    test <br/>
+                    test <br/>
+                    test <br/>
+                    test <br/>
+                    t <br/>
+                    test <br/>
+                    test <br/>
+                    test <br/>
+                    test <br/>
+                    test <br/>
+                    test <br/>
+                    test <br/>
+                </DiaryContext>
+            </DiaryContextWrapper>
         </InnerDiaryResultContainer>
     )
 }
@@ -21,8 +39,22 @@ const InnerDiaryResultContainer = styled.div`
 
     position: absolute;
     width: 100%;
-    height: 85%;
+    height: 80%;
     bottom: 0;
     left: 0;
     right: 0;
+`;
+
+const DiaryContextWrapper = styled.div`
+    padding: 20px; 
+    overflow-y: auto; 
+    max-height: 80%;
+`;
+
+const DiaryContext = styled.p`
+    color: ${({ theme }) => theme.color.black};
+
+    font-size: 1rem;
+    font-weight: ${({ theme }) => theme.fontWeight.regular};
+    font-family: OmyuPretty;
 `;
