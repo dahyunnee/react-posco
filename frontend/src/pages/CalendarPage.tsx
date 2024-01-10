@@ -21,9 +21,11 @@ export default class CalendarPage extends PureComponent {
     render(){
         return(
             <Layout>
-
+                <Left></Left>
+                <Right>
+                    <Left>
             <LineChart
-                width={1000}
+                width={200}
                 height={300}
                 data={data}
                 margin={{top:5, right:30, left:20, bottom:5}}
@@ -35,8 +37,10 @@ export default class CalendarPage extends PureComponent {
                 <Line type="monotone" dataKey="유동 인구 수" stroke="#8884d8" activeDot={{r:8}}/>
                 <Line type="monotone" dataKey="비유동 인구 수" stroke="#82ca9d"/>
             </LineChart>
+            </Left>
+            <Right>
             <LineChart
-                width={1000}
+                width={200}
                 height={300}
                 data={data}
                 margin={{top:5, right:30, left:20, bottom:5}}
@@ -48,17 +52,24 @@ export default class CalendarPage extends PureComponent {
                 <Line type="monotone" dataKey="유동 인구 수" stroke="#8884d8" activeDot={{r:8}}/>
                 <Line type="monotone" dataKey="비유동 인구 수" stroke="#82ca9d"/>
             </LineChart>
+            </Right>
+            </Right>
             </Layout>
         )
     }
 };
 
 const Layout = styled.div`
-border: 5px solid #ffcc5c;
+    // border: 5px solid #ffcc5c;
     display:flex; 
-    height: 400px;
-
-
-
-
+    // height: 400px;
+`;
+const Left = styled.div`
+    width:45%;
+    padding:1%
+    margin-right:1%
+`;
+const Right = styled.div`
+    width:45%;
+    padding:1%
 `;
