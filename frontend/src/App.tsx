@@ -5,7 +5,6 @@ import GlobalStyle from './styles/GlobalStyle';
 import theme from './styles/theme';
 import Router from './components/common/Router';
 
-
 function App() {
   return (
     <ThemeProvider theme={theme}>

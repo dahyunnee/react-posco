@@ -4,7 +4,7 @@ import MainPage from '../../pages/MainPage';
 import CalendarPage from '../../pages/CalendarPage'; 
 
 function Router() {
-    return(
+    return (
         <Routes>
             <Route path='/' element={<CalendarPage />}></Route>
             <Route path='/result/:diaryId' element={<EmotionResult/>}></Route>

@@ -23,7 +23,7 @@ function Header() {
                         <IconUserName/>
                     </HeaderMyPageButton>
                 </>
-            ) : (
+            ) : location.pathname.includes('/result/') ? (
                 <>
                     <HeaderBackButton onClick={() => navigate(-1)}>
                         <BackButton />
@@ -34,6 +34,10 @@ function Header() {
                     <HeaderMyPageButton onClick={() => navigate('/')}>
                         <IconUserName />
                     </HeaderMyPageButton>
+                </>
+            ) : (
+                <>
+                    
                 </>
             )}
         </HeaderWrapper>
