@@ -409,7 +409,7 @@ const boxStyle2 = {
   boxShadow: "0 0 0 0.2rem #FFD761",
   position: "absolute",
   left: "50%",
-  top: "13%",
+  top: "12%",
   transform: "translateX(-50%)",
 };
 

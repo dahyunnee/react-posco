@@ -9,6 +9,7 @@ function Router() {
     return (
         <Routes>
             <Route path='/' element={<LoginPage />}></Route>
+            <Route path='/main' element={<MainPage />}></Route>
             <Route path='/result/:diaryId' element={<EmotionResult/>}></Route>
             <Route path='/calendar' element={<CalendarPage/>}></Route>
             <Route path='/register' element={<RegisterBox/>}></Route>

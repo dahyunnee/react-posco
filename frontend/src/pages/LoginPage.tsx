@@ -1,9 +1,9 @@
-import RegisterBox from "../components/user/RegisterBox";
+import LoginBox from "../components/user/LoginBox";
 
 const LoginPage = () => {
     // const users = useAppSelector((state) => state.user.userData);
      return(
-         <RegisterBox></RegisterBox>
+         <LoginBox></LoginBox>
      );
  };
  export default LoginPage;
