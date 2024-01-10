@@ -38,7 +38,7 @@ public class UserContoller {
     @PostMapping("/register")
     public ResponseEntity<String> handleRegister(@RequestBody UserRegisterDto newUser, HttpSession session, RedirectAttributes redirectAttributes){
 
-        UserStatus status = userServices.RegisterNewUser(newUser.nickName, newUser.identity, newUser.password);
+        UserStatus status = userServices.RegisterNewUser(newUser.nickName, newUser.userId, newUser.password, newUser.name, newUser.email);
         if(status == UserStatus.SUCCESS){
             return ResponseEntity.ok(UserStatus.SUCCESS.toString());
         }

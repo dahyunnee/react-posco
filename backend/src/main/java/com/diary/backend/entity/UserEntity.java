@@ -8,30 +8,43 @@ public class UserEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private long userId;
+  private long id;
   @Column(name = "nickName")
   private String nickName;
-  @Column(name = "identity")
-  private String identity;
+  @Column(name = "userId")
+  private String userId;
   @Column(name = "password")
   private String password;
+  @Column(name = "name")
+  private String name;
+  @Column(name = "email")
+  private String email;
 
-  public long getUserId() {
-    return userId;
+
+  public long geId() {
+    return id;
   }
 
   public String getNickName() {
     return nickName;
   }
-  public String getIdentity() {
-    return identity;
+  public String getUserId() {
+    return userId;
   }
   public String getPassword() {
     return password;
   }
-  public void registerNewUser(String nickName, String identity, String password) {
+  public String getName() {
+    return name;
+  }
+  public String getEmail() {
+    return email;
+  }
+  public void registerNewUser(String nickName, String userId, String password, String name, String email) {
     this.nickName = nickName;
-    this.identity = identity;
+    this.userId = userId;
     this.password = password;
+    this.name = name;
+    this.email = email;
   }
 }

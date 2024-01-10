@@ -28,7 +28,7 @@ public class UserServices {
         return loginResponse;
     }
 
-    public UserStatus RegisterNewUser(String nickName, String identity, String password) {
+    public UserStatus RegisterNewUser(String nickName, String identity, String password, String name, String email) {
         if(userRepository.findByIdentity(identity) != null ){
             return UserStatus.ALREADY_EXIST_IDENTITY;
         }
@@ -37,7 +37,7 @@ public class UserServices {
         }
         else{
             UserEntity newUserEntity = new UserEntity();
-            newUserEntity.registerNewUser(nickName, identity, password);
+            newUserEntity.registerNewUser(nickName, identity, password, name, email);
             userRepository.save(newUserEntity);
             return UserStatus.SUCCESS;
         }
