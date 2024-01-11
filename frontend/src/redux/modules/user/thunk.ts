@@ -10,7 +10,7 @@ export const signupAction: any = createAsyncThunk(
   async (userData: SignupType, { rejectWithValue }) => {
     try {
       const axios = axiosInitializer();
-      await axios.post("/api/users", userData);
+      await axios.post("/users/register", userData);
       alert("회원가입 완료");
     } catch (e: any) {
       alert(e.response.data.message);
@@ -25,7 +25,8 @@ export const checkIdAction: any = createAsyncThunk(
   async (id: string, { rejectWithValue }) => {
     try {
       const axios = axiosInitializer();
-      const { data } = await axios.get(`/api/users/id/${id}`);
+      const { data } = await axios.get(`/users/id/${id}`);
+      console.log("여기여기",data);
       return data;
     } catch (e) {
       return rejectWithValue(e);
@@ -39,7 +40,7 @@ export const checkNickNameAction: any = createAsyncThunk(
   async (nickName: string, { rejectWithValue }) => {
     try {
       const axios = axiosInitializer();
-      const { data } = await axios.get(`/api/users/nickName/${nickName}`);
+      const { data } = await axios.get(`/users/nickName/${nickName}`);
       return data;
     } catch (e) {
       return rejectWithValue(e);
@@ -53,7 +54,7 @@ export const checkEmailAction: any = createAsyncThunk(
   async (email: string, { rejectWithValue }) => {
     try {
       const axios = axiosInitializer();
-      const { data } = await axios.get(`/api/users/email/${email}`);
+      const { data } = await axios.get(`/users/email/${email}`);
       return data;
     } catch (e) {
       return rejectWithValue(e);
@@ -68,7 +69,7 @@ export const signinAction: any = createAsyncThunk(
     try {
       const axios = axiosInitializer();
       await axios
-        .post("/api/auth/login", userData, {
+        .post("/users/login", userData, {
           headers: {
             "Content-Type": "application/json",
           },
@@ -86,7 +87,7 @@ export const setUserWithTokenAction: any = createAsyncThunk(
   async (_, { dispatch, rejectWithValue }) => {
     try {
       const axios = axiosInitializer();
-      const { data } = await axios.get("/api/users", {
+      const { data } = await axios.get("/users", {
         headers: {
           "Content-Type": "application/json"
         },
@@ -109,7 +110,7 @@ export const logoutAction: any = createAsyncThunk(
     try {
       const axios = axiosInitializer();
       await axios
-        .delete("api/auth/logout", {
+        .delete("/logout", {
           headers: {
             "Content-Type": "application/json"
           },
@@ -120,33 +121,7 @@ export const logoutAction: any = createAsyncThunk(
   }
 );
 
-// 비밀번호 변경
-export const changePwAction: any = createAsyncThunk(
-  "CHANGE_PW",
-  async (userData: UpdateUserType, { rejectWithValue }) => {
-    try {
-      const axios = axiosInitializer();
-      await axios.put("api/users/password", userData);
-    } catch (e) {
-      return rejectWithValue(e);
-    }
-  }
-);
 
-// 닉네임 변경
-export const changeUserAction: any = createAsyncThunk(
-  "CHANGE_USER",
-  async (userData: UpdateUserType, { dispatch, rejectWithValue }) => {
-    try {
-      const axios = axiosInitializer();
-      await axios.put("api/users", userData).then(() => {
-        dispatch(setUserWithTokenAction());
-      });
-    } catch (e) {
-      return rejectWithValue(e);
-    }
-  }
-);
 
 // 회원 탈퇴
 export const deleteUserAction: any = createAsyncThunk(
@@ -155,7 +130,7 @@ export const deleteUserAction: any = createAsyncThunk(
     try {
       const axios = axiosInitializer();
       await axios
-        .delete(`/api/users`, {
+        .delete(`/users`, {
           headers: {
             "Content-Type": "application/json",
           },

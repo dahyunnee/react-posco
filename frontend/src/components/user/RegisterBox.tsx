@@ -191,13 +191,13 @@ const RegisterBox = () => {
           </h2>
           <FormControl variant="standard">
             <InputLabel
-              htmlFor="id"
+              htmlFor="userId"
               sx={{ fontFamily: "insungitCutelivelyjisu" }}
             >
               아이디
             </InputLabel>
             <Input
-              id="id"
+              id="userId"
               value={uid}
               onChange={onChangeId}
               required
