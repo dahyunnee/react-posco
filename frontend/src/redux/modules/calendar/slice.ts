@@ -1,7 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
+import {getCalendarAction} from "./thunk";
 import { CalendarStateType } from "../../../../types/calendar/calendarStateType";
 const initialState: CalendarStateType = {
-
+    getCalendar: {loading: false, data:null, error:null},
 };
 
 const calendarSlice = createSlice({
@@ -10,20 +11,20 @@ const calendarSlice = createSlice({
     reducers: {},
     extraReducers: (builder) => {
     //   builder
-    //     .addCase(signupAction.pending, (state) => {
-    //       state.signup.loading = true;
-    //       state.signup.data = null;
-    //       state.signup.error = null;
+    //     .addCase(getCalendarAction.pending, (state) => {
+    //       state.getCalendar.loading = true;
+    //       state.getCalendar.data = null;
+    //       state.getCalendar.error = null;
     //     })
-    //     .addCase(signupAction.fulfilled, (state, { payload }) => {
-    //       state.signup.loading = false;
-    //       state.signup.data = payload;
-    //       state.signup.error = null;
+    //     .addCase(getCalendarAction.fulfilled, (state, { payload }) => {
+    //       state.getCalendar.loading = false;
+    //       state.getCalendar.data = payload;
+    //       state.getCalendar.error = null;
     //     })
-    //     .addCase(signupAction.rejected, (state, { payload }) => {
-    //       state.signup.loading = false;
-    //       state.signup.data = null;
-    //       state.signup.error = payload;
+    //     .addCase(getCalendarAction.rejected, (state, { payload }) => {
+    //       state.getCalendar.loading = false;
+    //       state.getCalendar.data = null;
+    //       state.getCalendar.error = payload;
     //     })
     //     ;
     },

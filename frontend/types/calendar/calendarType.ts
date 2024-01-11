@@ -1,9 +1,5 @@
-export type DirayType={
-    diaryId: number,
+export type CalendarType={
     writeDate: string,
-    weather: string,
-    content: string,
-    emotionId: number,
     fear: number,
     surprised: number,
     anger: number,

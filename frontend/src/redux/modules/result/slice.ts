@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { ResultStateType } from "../../../../types/result/resultStateType";
 const initialState: ResultStateType = {
-
+    
 };
 
 const resultSlice = createSlice({

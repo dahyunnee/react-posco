@@ -27,7 +27,6 @@ export const checkIdAction: any = createAsyncThunk(
     try {
       const axios = axiosInitializer();
       const { data } = await axios.get(`/users/id/${id}`);
-      console.log("여기여기",data);
       return data;
     } catch (e) {
       return rejectWithValue(e);
