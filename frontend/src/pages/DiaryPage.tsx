@@ -39,9 +39,9 @@ function DiaryPage() {
         content: diaryContext,
     });
     if (diarySaveBodyType) {
-        setButtonDisabled(true)
+        setButtonDisabled(true);
         const newDiaryId = await registerNewDiary(diarySaveBodyType);
-        navigate(`/result/${newDiaryId}`)
+        navigate(`/result/${newDiaryId}`);
     }
     }
 

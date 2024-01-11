@@ -1,27 +1,30 @@
+import { CSSProperties } from 'styled-components';
 import { styled } from 'styled-components';
 
 interface ITest{
     width: number;
 } 
 
-interface ITextProps {
-    text: string;
+interface ProgressBarProps {
+    availableItem?:number;
+    barName? : string;
+    style? : CSSProperties;
 }
 
-function ProgressBar(props: any) {
+function ProgressBar({availableItem, barName, style}: ProgressBarProps) {
 	const maxItem = 5
-	let availableItem = 2
-
+    if(availableItem === undefined) availableItem = 0;
+    if(barName === undefined) barName = 'empty';
     return (
-        <>
+        <div style={style}>
             <ProgressBarContainer>
-                <Progress width = {100-(availableItem*100/maxItem)}/>
+                <Progress width = {availableItem*100/maxItem}/>
             </ProgressBarContainer>
             <TextContainer>
-                <EmotionText>Happy</EmotionText>
+                <EmotionText>{barName}</EmotionText>
                 <PercentageText>{Math.round((availableItem * 100) / maxItem)}%</PercentageText>
             </TextContainer>
-        </>
+        </div>
     )
 }
 

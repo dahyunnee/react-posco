@@ -2,16 +2,29 @@ import styled from 'styled-components';
 import DiaryResult from '../components/emotionResult/DiaryResult';
 import ProgressBar from '../components/emotionResult/ProgressBar';
 import { ChickenImage } from '../assets/icons';
+import { useEffect } from 'react';
+import axios from 'axios';
+import { useParams } from 'react-router-dom';
+import { useAppSelector } from '../redux/configStore.hooks';
 
 function EmotionResult() {
+    const {diaryId} = useParams<{diaryId : string}>();
+    const user = useAppSelector((state) => state.user.userData);
+    useEffect(() => {
+        const initPage = async () => {
+            const data = await getResultData("js7744", Number(diaryId));
+            console.log(data['content']);
+        }
+        initPage();
+    }, [user, diaryId])
     return (
             <EmotionResultContainer>
                 <UpperHorizontalContainer>
                     <ProgressBarContainer>
-                        <ProgressBar></ProgressBar>
-                        <ProgressBar></ProgressBar>
-                        <ProgressBar></ProgressBar>
-                        <ProgressBar></ProgressBar>
+                        <ProgressBar availableItem={1} barName='name1'></ProgressBar>
+                        <ProgressBar availableItem={2} barName='name2'></ProgressBar>
+                        <ProgressBar availableItem={3} barName='name3'></ProgressBar>
+                        <ProgressBar availableItem={4} barName='name4'></ProgressBar>
                     </ProgressBarContainer>
                     <DiaryResult></DiaryResult>
                 </UpperHorizontalContainer>
@@ -30,6 +43,17 @@ function EmotionResult() {
 }
 
 export default EmotionResult;
+
+//const getEmotionList = (data : )
+
+const getResultData = async (userId:string, diaryId:number) => {
+    try {
+        const response = await axios.get(`http://127.0.0.1:8080/diary/analysis?userId=${userId}&diaryId=${diaryId}`);
+        return response.data;
+      } catch (error) {
+        console.error(error);
+      }
+}
 
 const RowWrapper = styled.div`
     display: flex;

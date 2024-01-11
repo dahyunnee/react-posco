@@ -27,6 +27,7 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class DiaryServices {
@@ -227,7 +228,6 @@ public class DiaryServices {
             return ResponseEntity.badRequest().body(DiaryStatus.INVALID_USER_ID);
         }
         CalendarInfoList calendarInfoList = new CalendarInfoList();
-        EmotionDto emotionDto = new EmotionDto();
         List<DiaryEntity> diaryEntityList = diaryRepository.findByAuthor(userRepository.findByUserId(userId));
         for(DiaryEntity diaryEntity : diaryEntityList){
             AnalysisEntity analysisEntity = analysisRepository.findByDiaryId(diaryEntity);
@@ -235,26 +235,31 @@ public class DiaryServices {
             if(diaryEntity.getWriteDate().toLocalDateTime().getYear() != searchMonth.getYear() || diaryEntity.getWriteDate().toLocalDateTime().getMonth() != searchMonth.getMonth()){
                 continue;
             }
+            CalendarInfo samedayInfo = calendarInfoList.calendarList.stream()
+                    .filter(calendarInfo -> calendarInfo.writeDate.equals(diaryEntity.getWriteDate().toLocalDateTime().toLocalDate().toString()))
+                    .findFirst()
+                    .orElse(null);
+            if(samedayInfo != null){
+                samedayInfo.fear += emotionEntity.getFear();
+                samedayInfo.surprised += emotionEntity.getSurprised();
+                samedayInfo.anger += emotionEntity.getAnger();
+                samedayInfo.sadness += emotionEntity.getSadness();
+                samedayInfo.neutrality += emotionEntity.getNeutrality();
+                samedayInfo.happiness += emotionEntity.getHappiness();
+                samedayInfo.disgust += emotionEntity.getDisgust();
+                continue;
+            }
             CalendarInfo calendarInfo = new CalendarInfo();
             calendarInfo.writeDate = diaryEntity.getWriteDate().toLocalDateTime().toLocalDate().toString();
-            emotionDto.fear += emotionEntity.getFear();
-            emotionDto.surprised += emotionEntity.getSurprised();
-            emotionDto.anger += emotionEntity.getAnger();
-            emotionDto.sadness += emotionEntity.getSadness();
-            emotionDto.neutrality += emotionEntity.getNeutrality();
-            emotionDto.happiness += emotionEntity.getHappiness();
-            emotionDto.disgust += emotionEntity.getDisgust();
+            calendarInfo.fear += emotionEntity.getFear();
+            calendarInfo.surprised += emotionEntity.getSurprised();
+            calendarInfo.anger += emotionEntity.getAnger();
+            calendarInfo.sadness += emotionEntity.getSadness();
+            calendarInfo.neutrality += emotionEntity.getNeutrality();
+            calendarInfo.happiness += emotionEntity.getHappiness();
+            calendarInfo.disgust += emotionEntity.getDisgust();
 
             calendarInfoList.calendarList.add(calendarInfo);
-        }
-        for(CalendarInfo calendarInfo : calendarInfoList.calendarList){
-            calendarInfo.fear = emotionDto.fear;
-            calendarInfo.surprised = emotionDto.surprised;
-            calendarInfo.anger = emotionDto.anger;
-            calendarInfo.sadness = emotionDto.sadness;
-            calendarInfo.neutrality = emotionDto.neutrality;
-            calendarInfo.happiness = emotionDto.happiness;
-            calendarInfo.disgust = emotionDto.disgust;
         }
         return ResponseEntity.ok().body(calendarInfoList);
     }
