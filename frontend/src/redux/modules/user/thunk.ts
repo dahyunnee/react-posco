@@ -10,7 +10,7 @@ export const signupAction: any = createAsyncThunk(
   async (userData: SignupType, { rejectWithValue }) => {
     try {
       const axios = axiosInitializer();
-      console.log("userId",userData.userId);
+      console.log("userId", userData.userId);
       await axios.post("/users/register", userData);
       alert("회원가입 완료");
     } catch (e: any) {
@@ -68,12 +68,12 @@ export const signinAction: any = createAsyncThunk(
   async (userData: SigninType, { dispatch, rejectWithValue }) => {
     try {
       const axios = axiosInitializer();
-      await axios
-        .post("/users/login", userData, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
+      const { data } = await axios.post("/users/login", userData, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      return data;
     } catch (e: any) {
       alert(e.response.data.message);
       return rejectWithValue(e);
@@ -89,7 +89,7 @@ export const setUserWithTokenAction: any = createAsyncThunk(
       const axios = axiosInitializer();
       const { data } = await axios.get("/users", {
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
       });
       // console.log(getToken());
@@ -102,26 +102,22 @@ export const setUserWithTokenAction: any = createAsyncThunk(
   }
 );
 
-
 // 로그아웃
 export const logoutAction: any = createAsyncThunk(
   "LOGOUT",
   async (_, { rejectWithValue }) => {
     try {
       const axios = axiosInitializer();
-      await axios
-        .delete("/logout", {
-          headers: {
-            "Content-Type": "application/json"
-          },
-        });
+      await axios.delete("/logout", {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
     } catch (e) {
       return rejectWithValue(e);
     }
   }
 );
-
-
 
 // 회원 탈퇴
 export const deleteUserAction: any = createAsyncThunk(

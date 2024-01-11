@@ -55,10 +55,11 @@ public class UserContoller {
         if(!userServices.isExistByUserId(loginDto.getUserId())){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Message("존재하지 않는 사용자 입니다"));
         }
-        if(!userServices.loginUser(loginDto)) {
-            return ResponseEntity.ok(new Message("로그인 성공"));
+        UserRegisterDto result = userServices.loginUser(loginDto);
+        if(result==null) {
+            return ResponseEntity.ok(new Message("로그인 실패"));
         }
-        return ResponseEntity.ok(new Message("로그인 성공"));
+        return ResponseEntity.ok(result);
     }
 
 //    @PostMapping("/login")

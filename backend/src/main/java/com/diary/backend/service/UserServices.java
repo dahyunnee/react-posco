@@ -43,13 +43,13 @@ public class UserServices {
         return userRepository.save(userEntity);
     }
 
-    public boolean loginUser(LoginDto loginDTO) {
+    public UserRegisterDto loginUser(LoginDto loginDTO) {
         UserEntity findUser = userRepository.findByUserId(loginDTO.getUserId());
         if(!loginDTO.getPassword().equals(findUser.getPassword())) {
             throw new CustomException(HttpStatus.BAD_REQUEST, "잘못된 비밀번호입니다.");
         }
 
-        return true;
+        return findUser.toDto();
     }
     public LoginResponse LoginVerify(String userId, String password){
         UserEntity userEntity = userRepository.findByUserId(userId);

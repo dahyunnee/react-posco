@@ -6,7 +6,6 @@ import {
   checkNickNameAction,
   checkEmailAction,
   signinAction,
-  setUserWithTokenAction,
   logoutAction,
 } from "./thunk";
 
@@ -100,6 +99,11 @@ const userSlice = createSlice({
         state.signin.loading = false;
         state.signin.data = payload;
         state.signin.error = null;
+        state.userData.isLoggedIn = true;
+        state.userData.id = payload.userId;
+        state.userData.email = payload.email;
+        state.userData.name = payload.name;
+        state.userData.nickName = payload.nickName;
       })
       .addCase(signinAction.rejected, (state, { payload }) => {
         state.signin.loading = false;
