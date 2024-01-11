@@ -9,6 +9,7 @@ import FullCalendar from "@fullcalendar/react";
 import {EventContentArg} from "@fullcalendar/core";
 import EventApi from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
+import ProgressBar from "../components/emotionResult/ProgressBar";
 // import { useNavigate } from "react-router-dom";
 
 const data = [
@@ -19,7 +20,7 @@ const data = [
     { 군구: '강남구', '이번 달 행복 지수': 51420, '이번 달 우울 지수': 55000},
 ];
 const events = [
-    { title: 'Meeting1', start: new Date('2024-1-22') , end: new Date('2024-1-23'), color:"#EB6927", allDay:true},
+    { title: '📕', start: new Date('2024-1-22') , end: new Date('2024-1-23'), color:"pink", allDay:true},
   	{ title: 'Meeting2', start: new Date('2024-1-30'), end: new Date('2024-1-31'), color:"#2D8CFF" }
 ];
 const manCount = 5;
@@ -61,6 +62,39 @@ export default class CalendarPage extends PureComponent {
                     <div style={{display:"flex"}}>
                         <Left>
                         <div >
+                                <h1 style={{ marginBottom: '30px' }}>이 달 감정 비율</h1>
+                                <PieChart width={400} height={300}>
+                                    <Legend
+                                    height={110}
+                                    layout="vertical"
+                                    verticalAlign="middle"
+                                    align="right"
+                                    iconSize={7}
+                                    payload={[
+                                        { value: `남 ${manCount}%`, type: 'square', color: '#EB6927' },
+                                        { value: `여 ${womanCount}%`, type: 'square', color: '#2D8CFF' },
+                                    ]}
+                                    />
+                                    <Pie
+                                    data={sexRatioData}
+                                    dataKey="value"
+                                    nameKey="name"
+                                    innerRadius={60}
+                                    outerRadius={80}
+                                    cx={80}
+                                    cy={100}
+                                    />
+
+                                    <Tooltip />
+                                </PieChart>
+                            </div>
+                        </Left>
+                        <Right className="xc" style={{backgroundColor:"#FFF3DA", borderRadius: "30px", border: "30px solid #FFF3DA"}}>
+                            
+                            <h1>이 달 마음 지수</h1>
+                            <ProgressBar style={{width:"600px", height:"400px"}}></ProgressBar>
+                            <ProgressBar></ProgressBar>
+                        {/* <div >
                                 <h1 style={{ marginBottom: '30px' }}>2023년도 사용자</h1>
                                 <PieChart width={400} height={300}>
                                     <Legend
@@ -87,36 +121,7 @@ export default class CalendarPage extends PureComponent {
 
                                     <Tooltip />
                                 </PieChart>
-                            </div>
-                        </Left>
-                        <Right className="xc" style={{backgroundColor:"#FFF3DA", borderRadius: "30px", border: "30px solid #FFF3DA"}}>
-                            <div >
-                                <h1 style={{ marginBottom: '30px' }}>2023년도 사용자</h1>
-                                <PieChart width={400} height={300}>
-                                    <Legend
-                                    height={110}
-                                    layout="vertical"
-                                    verticalAlign="middle"
-                                    align="right"
-                                    iconSize={7}
-                                    payload={[
-                                        { value: `남 ${manCount}%`, type: 'square', color: '#EB6927' },
-                                        { value: `여 ${womanCount}%`, type: 'square', color: '#2D8CFF' },
-                                    ]}
-                                    />
-                                    <Pie
-                                    data={sexRatioData}
-                                    dataKey="value"
-                                    nameKey="name"
-                                    innerRadius={60}
-                                    outerRadius={80}
-                                    cx={80}
-                                    cy={100}
-                                    />
-
-                                    <Tooltip />
-                                </PieChart>
-                            </div>
+                            </div> */}
                         </Right>
                     </div>
                     <div style={{display:"flex"}}>
@@ -181,9 +186,17 @@ const Right = styled.div`
     margin-bottom:1%;
     // padding:1%;
 `;
-const Up = styled.div`
-
+const Title = styled.div`
+    background-color:#FFEDC7; 
+    border-radius: 10px;
+    border: 10px solid #FFEDC7;
+    height:5%;
+    width:90%;
+    // padding:1%;
+    margin-bottom:20%;
+    margin-right:1%;
+    // position:absolute;
+    // left:50%;
+    // transform:translate(-50%);
 `;
-const Down = styled.div`
 
-`;
