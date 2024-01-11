@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ChatBot</title>
+</head>
+<body>
+    <h1>ChatBot</h1>
+    <form method="post" action="/chating">
+        <label for="input_text">Input chating:</label><br>
+        <textarea id="input_text" name="input_text" rows="2" cols="50"></textarea><br>
+        <input type="submit" value="전송">
+    </form>
+
+    <div id="response"></div>
+    <script>
+        document.querySelector('form').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const formData = new FormData(this);
+            const response = await fetch('/chating', {
+                method: 'POST',
+                body: formData
+            });
+            const data = await response.json();
+            document.getElementById('response').innerText = '서버 응답: ' + data.response;
+        });
+    </script>
+</body></html>
