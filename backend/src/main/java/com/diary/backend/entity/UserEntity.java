@@ -1,5 +1,6 @@
 package com.diary.backend.entity;
 
+import com.diary.backend.dto.UserRegisterDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -35,5 +36,13 @@ public class UserEntity {
     this.password = password;
     this.name = name;
     this.email = email;
+  }
+
+  public UserRegisterDto toDto(){
+    return UserRegisterDto.builder().userId(this.userId)
+            .email(this.email)
+            .name(this.name)
+            .nickName(this.nickName)
+            .build();
   }
 }

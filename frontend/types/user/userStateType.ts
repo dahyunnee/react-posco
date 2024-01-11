@@ -8,7 +8,4 @@ export type UserStateType = {
   checkNickName: ReduxStateType;
   checkEmail: ReduxStateType;
   signin: ReduxStateType;
-  getMe: ReduxStateType;
-  updateUser: ReduxStateType;
-  deleteUser: ReduxStateType;
 };
