@@ -1,16 +1,17 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { axiosInitializer } from "../../util/https";
+import { GetResultType } from "../../../../types/calendar/getResultType";
 
-// export const signupAction: any = createAsyncThunk(
-//     "SIGNUP",
-//     async (userData: SignupType, { rejectWithValue }) => {
-//       try {
-//         const axios = axiosInitializer();
-//         await axios.post("/users/register", userData);
-//         alert("회원가입 완료");
-//       } catch (e: any) {
-//         alert(e.response.data.message);
-//         return rejectWithValue(e);
-//       }
-//     }
-//   );
+// 캘린더 데이터 가져오기
+export const getCalendarAction: any = createAsyncThunk(
+    "GET_CALENDAR",
+    async (searchData: GetResultType, { rejectWithValue }) => {
+      try {
+        const axios = axiosInitializer();
+        const { data } = await axios.get(`/diary/list?userId=${searchData.userId}&searchMonth=${searchData.searchMonth}`);
+        return data;
+      } catch (e) {
+        return rejectWithValue(e);
+      }
+    }
+  );
