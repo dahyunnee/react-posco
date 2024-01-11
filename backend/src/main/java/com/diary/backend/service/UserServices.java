@@ -1,12 +1,18 @@
 package com.diary.backend.service;
 
 import com.diary.backend.Enums.UserStatus;
+import com.diary.backend.common.CustomException;
+import com.diary.backend.common.Message;
+import com.diary.backend.dto.LoginDto;
 import com.diary.backend.dto.LoginResponse;
 import com.diary.backend.dto.UserRegisterDto;
 import com.diary.backend.entity.UserEntity;
 import com.diary.backend.repository.UserRepository;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @Service
 public class UserServices {
@@ -24,11 +30,6 @@ public class UserServices {
         return userRepository.existsByNickName(nickName);
     }
 
-    public boolean isExistByEmail(String email) {
-        return userRepository.existsByEmail(email);
-    }
-
-
     public UserEntity createUser(UserRegisterDto signUpDTO) {
 
         UserEntity userEntity = UserEntity.builder()
@@ -42,7 +43,14 @@ public class UserServices {
         return userRepository.save(userEntity);
     }
 
+    public boolean loginUser(LoginDto loginDTO) {
+        UserEntity findUser = userRepository.findByUserId(loginDTO.getUserId());
+        if(!loginDTO.getPassword().equals(findUser.getPassword())) {
+            throw new CustomException(HttpStatus.BAD_REQUEST, "잘못된 비밀번호입니다.");
+        }
 
+        return true;
+    }
     public LoginResponse LoginVerify(String userId, String password){
         UserEntity userEntity = userRepository.findByUserId(userId);
         LoginResponse loginResponse;

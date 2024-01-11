@@ -24,6 +24,7 @@ public class UserContoller {
 
     @PostMapping("/register")
     public ResponseEntity insertUser(@RequestBody UserRegisterDto signUpDTO){
+        System.out.println("userId"+signUpDTO.getUserId());
         UserEntity result = userServices.createUser(signUpDTO);
         if(result==null){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Message("회원가입에 실패하였습니다."));
@@ -54,7 +55,9 @@ public class UserContoller {
         if(!userServices.isExistByUserId(loginDto.getUserId())){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Message("존재하지 않는 사용자 입니다"));
         }
-        userServices.LoginVerify(loginDto.getUserId(), loginDto.getPassword());
+        if(!userServices.loginUser(loginDto)) {
+            return ResponseEntity.ok(new Message("로그인 성공"));
+        }
         return ResponseEntity.ok(new Message("로그인 성공"));
     }
 

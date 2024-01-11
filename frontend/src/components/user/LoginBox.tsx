@@ -27,7 +27,7 @@ const LoginBox = () => {
     e.preventDefault();
     dispatch(
       signinAction({
-        id: uid,
+        userId: uid,
         password: pw,
       })
     ).then(() => {

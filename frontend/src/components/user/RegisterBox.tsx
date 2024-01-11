@@ -121,7 +121,7 @@ const RegisterBox = () => {
     if (idCheck && pwCheck && rePwCheck && nickName && emailCheck) {
       dispatch(
         signupAction({
-          id: uid,
+          userId: uid,
           password: pw,
           email: email,
           nickName: nickName,
@@ -169,7 +169,7 @@ const RegisterBox = () => {
   }, [checkEmail]);
 
   return (
-    <BackgroundDiv>
+    // <BackgroundDiv>
       <Box
         component="form"
         sx={boxStyle}
@@ -191,13 +191,13 @@ const RegisterBox = () => {
           </h2>
           <FormControl variant="standard">
             <InputLabel
-              htmlFor="userId"
+              htmlFor="id"
               sx={{ fontFamily: "insungitCutelivelyjisu" }}
             >
               아이디
             </InputLabel>
             <Input
-              id="userId"
+              id="id"
               value={uid}
               onChange={onChangeId}
               required
@@ -378,7 +378,6 @@ const RegisterBox = () => {
           </Box>
         </Box>
       </Box>
-    </BackgroundDiv>
   );
 };
 
@@ -437,12 +436,12 @@ const StyledButton = styled(Button)<ButtonProps>(({ theme }) => ({
   },
 }));
 
-const BackgroundDiv = styledComp.div`
-  background-image:url('assets/img/background.jpg');
-  background-repeat:no-repeat;
-  background-size: 100%;
-  width:100%;
-  height:100%;
-  background-position:center;
+// const BackgroundDiv = styledComp.div`
+//   background-image:url('assets/img/background.jpg');
+//   background-repeat:no-repeat;
+//   background-size: 100%;
+//   width:100%;
+//   height:100%;
+//   background-position:center;
   
-`;
+// `;
