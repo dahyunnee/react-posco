@@ -25,6 +25,7 @@ import reactor.core.publisher.Mono;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.List;
 
 @Service
@@ -72,10 +73,10 @@ public class DiaryServices {
                             .scheme("http")
                             .host("127.0.0.1")
                             .port(5000)
-                            .path("/chatbot")
+                            .path("/chating")
                             .build())
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .body(BodyInserters.fromValue("{\"msg\" : \""+ newDiary.getContent() +"\"}"))
+                    .contentType(MediaType.MULTIPART_FORM_DATA)
+                    .body(BodyInserters.fromFormData("input_text", newDiary.getContent()))
                     .retrieve()
                     .bodyToMono(String.class)
                     .block();
@@ -89,7 +90,7 @@ public class DiaryServices {
         }
         AnalysisEntity analysisEntity = new AnalysisEntity();
         analysisEntity.setDiaryId(newDiary);
-        analysisEntity.setResultComment(aiChatbotResDto.resultComment);
+        analysisEntity.setResultComment(aiChatbotResDto.response);
         analysisRepository.save(analysisEntity);
 
         EmotionEntity emotionEntity = getEmotionSet(analysisEntity, newDiary);
@@ -111,10 +112,10 @@ public class DiaryServices {
                             .scheme("http")
                             .host("127.0.0.1")
                             .port(5000)
-                            .path("/emotion")
+                            .path("/diaryEmotion")
                             .build())
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .body(BodyInserters.fromValue("{\"diary\": \""+ newDiary.getContent() +"\"}"))
+                    .contentType(MediaType.MULTIPART_FORM_DATA)
+                    .body(BodyInserters.fromFormData("input_text", newDiary.getContent()))
                     .retrieve()
                     .bodyToMono(String.class)
                     .block();
@@ -128,13 +129,29 @@ public class DiaryServices {
         }
         EmotionEntity emotionEntity = new EmotionEntity();
         emotionEntity.setAnalysisId(analysis);
-        emotionEntity.setFear(aiEmotionResDto.fear);
-        emotionEntity.setSurprised(aiEmotionResDto.surprised);
-        emotionEntity.setAnger(aiEmotionResDto.anger);
-        emotionEntity.setSadness(aiEmotionResDto.sadness);
-        emotionEntity.setNeutrality(aiEmotionResDto.neutrality);
-        emotionEntity.setHappiness(aiEmotionResDto.happiness);
-        emotionEntity.setDisgust(aiEmotionResDto.disgust);
+        switch(aiEmotionResDto.result){
+            case "공포":
+                emotionEntity.setFear(1);
+                break;
+            case "놀람":
+                emotionEntity.setSurprised(1);
+                break;
+            case "분노":
+                emotionEntity.setAnger(1);
+                break;
+            case "슬픔":
+                emotionEntity.setSadness(1);
+                break;
+            case "중립":
+                emotionEntity.setNeutrality(1);
+                break;
+            case "행복":
+                emotionEntity.setHappiness(1);
+                break;
+            case "혐오":
+                emotionEntity.setDisgust(1);
+                break;
+        }
 
         emotionRepository.save(emotionEntity);
 
@@ -172,7 +189,7 @@ public class DiaryServices {
         }
     }
 
-    public ResponseEntity<?> getDiaryList(String userId, LocalDate yyyymm) {
+    public ResponseEntity<?> getDiaryList(String userId, YearMonth searchMonth) {
         UserEntity userEntity = userRepository.findByUserId(userId);
         if(userEntity == null){
             return ResponseEntity.badRequest().body(DiaryStatus.INVALID_USER_ID);
@@ -182,12 +199,38 @@ public class DiaryServices {
         for(DiaryEntity diaryEntity : diaryEntityList){
             AnalysisEntity analysisEntity = analysisRepository.findByDiaryId(diaryEntity);
             EmotionEntity emotionEntity = emotionRepository.findByAnalysisId(analysisEntity);
-
+            if(diaryEntity.getWriteDate().toLocalDateTime().getYear() != searchMonth.getYear() || diaryEntity.getWriteDate().toLocalDateTime().getMonth() != searchMonth.getMonth()){
+                continue;
+            }
             DiaryInfo diaryInfo = new DiaryInfo();
             diaryInfo.diaryInfo = diaryEntity;
             diaryInfo.emotionInfo = emotionEntity;
             diaryListDto.diaryList.add(diaryInfo);
         }
         return ResponseEntity.ok().body(diaryListDto);
+    }
+
+    public ResponseEntity<?> getDiaryAnalysis(String userId, long diaryId) {
+        UserEntity userEntity = userRepository.findByUserId(userId);
+        if(userEntity == null){
+            return ResponseEntity.badRequest().body(DiaryStatus.INVALID_USER_ID.toString());
+        }
+        DiaryEntity diaryEntity = diaryRepository.findByDiaryId(diaryId);
+        if(diaryEntity == null){
+            return ResponseEntity.badRequest().body(DiaryStatus.INVALID_DIARY_ID.toString());
+        }
+        AnalysisEntity analysisEntity = analysisRepository.findByDiaryId(diaryEntity);
+        if(analysisEntity == null){
+            return ResponseEntity.badRequest().body(DiaryStatus.INVALID_ANALYSIS_ID.toString());
+        }
+        EmotionEntity emotionEntity = emotionRepository.findByAnalysisId(analysisEntity);
+        if(emotionEntity == null){
+            return ResponseEntity.badRequest().body(DiaryStatus.INVALID_EMOTION_ID.toString());
+        }
+        DiaryAnalysisDto diaryAnalysisDto = new DiaryAnalysisDto();
+        diaryAnalysisDto.diaryInfo = diaryEntity;
+        diaryAnalysisDto.analysisInfo = analysisEntity;
+        diaryAnalysisDto.emotionInfo = emotionEntity;
+        return ResponseEntity.ok().body(diaryAnalysisDto);
     }
 }

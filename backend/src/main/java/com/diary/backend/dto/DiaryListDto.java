@@ -1,7 +1,7 @@
 package com.diary.backend.dto;
 
-import java.util.List;
+import java.util.*;
 
 public class DiaryListDto {
-    public List<DiaryInfo> diaryList;
+    public List<DiaryInfo> diaryList = new ArrayList<>();;
 }

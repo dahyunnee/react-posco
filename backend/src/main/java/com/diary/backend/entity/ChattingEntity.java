@@ -18,14 +18,12 @@ public class ChattingEntity {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long chattingId;
   @ManyToOne
-  @JoinColumn(name = "analysisId", nullable = false)
-  private AnalysisEntity analysisId;
+  @JoinColumn(name = "user_id", nullable = false)
+  private UserEntity userId;
   @Column(name = "question")
   private String question;
   @Column(name = "answer")
   private String answer;
-  @Column(name = "dialogIndex")
-  private long dialogIndex;
   @CurrentTimestamp
   @Column(name = "chatTime")
   private java.sql.Timestamp chatTime;
@@ -40,12 +38,12 @@ public class ChattingEntity {
   }
 
 
-  public AnalysisEntity getAnalysisId() {
-    return analysisId;
+  public UserEntity getUserId() {
+    return userId;
   }
 
-  public void setAnalysisId(AnalysisEntity analysisId) {
-    this.analysisId = analysisId;
+  public void setUserId(UserEntity userId) {
+    this.userId = userId;
   }
 
 
@@ -65,16 +63,6 @@ public class ChattingEntity {
   public void setAnswer(String answer) {
     this.answer = answer;
   }
-
-
-  public long getDialogIndex() {
-    return dialogIndex;
-  }
-
-  public void setDialogIndex(long dialogIndex) {
-    this.dialogIndex = dialogIndex;
-  }
-
 
   public java.sql.Timestamp getChatTime() {
     return chatTime;

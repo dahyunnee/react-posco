@@ -8,6 +8,7 @@ import com.diary.backend.repository.UserRepository;
 import com.diary.backend.service.DiaryServices;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.YearMonth;
 
 @RestController
 public class DiaryController {
@@ -40,7 +42,7 @@ public class DiaryController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return ResponseEntity.ok().body(DiaryStatus.SUCCESS.toString());
+        return ResponseEntity.ok().body(Long.toString(newDiary.getDiaryId()));
     }
 
     @GetMapping("/diary/weather")
@@ -56,7 +58,12 @@ public class DiaryController {
     }
 
     @GetMapping("/diary/list")
-    public ResponseEntity<?> handleDiaryList(@RequestParam String userId, @RequestParam LocalDate yyyymm, HttpSession session){
-        return diaryServices.getDiaryList(userId, yyyymm);
+    public ResponseEntity<?> handleDiaryList(@RequestParam String userId, @RequestParam @DateTimeFormat(pattern = "yyyy-MM") YearMonth searchMonth, HttpSession session){
+        return diaryServices.getDiaryList(userId, searchMonth);
+    }
+
+    @GetMapping("/diary/analysis")
+    public ResponseEntity<?> handleDiaryAnalysis(@RequestParam String userId, @RequestParam long diaryId, HttpSession session){
+        return diaryServices.getDiaryAnalysis(userId, diaryId);
     }
 }

@@ -1,12 +1,9 @@
 package com.diary.backend.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class AIEmotionResDto {
-    public int fear;
-    public int surprised;
-    public int anger;
-    public int sadness;
-    public int neutrality;
-    public int happiness;
-    public int disgust;
+    public String result;
 
 }

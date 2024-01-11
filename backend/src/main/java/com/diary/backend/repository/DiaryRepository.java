@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface DiaryRepository extends JpaRepository<DiaryEntity, Long> {
     List<DiaryEntity> findByAuthor(UserEntity userEntity);
+
+    DiaryEntity findByDiaryId(long diaryId);
 }
