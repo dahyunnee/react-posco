@@ -69,6 +69,14 @@ function Header() {
                     </HeaderEmotionResult>
                     <div></div>
                 </>
+            ) : location.pathname === '/diary' ? (
+                <>
+                    <div></div>
+                    <HeaderEmotionResult>
+                        일기쓰기
+                    </HeaderEmotionResult>
+                    <div></div>
+                </>
             ) : (
                 <>
                 </>

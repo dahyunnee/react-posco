@@ -34,7 +34,7 @@ const DiaryDayWrapper = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 10%
+    height: 10%;
 `;
 
 const DiaryDay = styled.p`
