@@ -23,9 +23,6 @@ const initialState: UserStateType = {
   checkId: { loading: false, data: null, error: null },
   checkNickName: { loading: false, data: null, error: null },
   checkEmail: { loading: false, data: null, error: null },
-  getMe: { loading: false, data: null, error: null },
-  updateUser: { loading: false, data: null, error: null },
-  deleteUser: { loading: false, data: null, error: null },
 };
 
 const userSlice = createSlice({
@@ -108,26 +105,6 @@ const userSlice = createSlice({
         state.signin.loading = false;
         state.signin.data = null;
         state.signin.error = payload;
-      })
-      .addCase(setUserWithTokenAction.pending, (state) => {
-        state.getMe.loading = true;
-        state.getMe.data = null;
-        state.getMe.error = null;
-      })
-      .addCase(setUserWithTokenAction.fulfilled, (state, { payload }) => {
-        state.getMe.loading = false;
-        state.getMe.data = payload;
-        state.getMe.error = null;
-        state.userData.id = payload.id;
-        state.userData.email = payload.email;
-        state.userData.name = payload.name;
-        state.userData.nickName = payload.nickName;
-        state.userData.isLoggedIn = true;
-      })
-      .addCase(setUserWithTokenAction.rejected, (state, { payload }) => {
-        state.getMe.loading = false;
-        state.getMe.data = null;
-        state.getMe.error = payload;
       })
       .addCase(logoutAction.fulfilled, (state, { payload }) => {
         state.userData.id = "";
