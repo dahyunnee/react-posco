@@ -10,6 +10,7 @@ export const signupAction: any = createAsyncThunk(
   async (userData: SignupType, { rejectWithValue }) => {
     try {
       const axios = axiosInitializer();
+      console.log("userId",userData.userId);
       await axios.post("/users/register", userData);
       alert("회원가입 완료");
     } catch (e: any) {
