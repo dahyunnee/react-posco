@@ -1,6 +1,9 @@
 Flask==3.0.0
 numpy==1.23.5
-pandas
 torch==2.1.0
-gluonnlp==0.9.1
-mxnet==1.6.0 # venv310/pyvenv.cfg에서 include-system-site-packages = true로 변경 후 설치
+gluonnlp
+mxnet
+transformers
+sentencepiece
+kobert_transformers
+'git+https://github.com/SKTBrain/KoBERT.git#egg=kobert_tokenizer&subdirectory=kobert_hf'
