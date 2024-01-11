@@ -1,2 +1,5 @@
 
 chatbot_flask/app/gluon-nlp/
+chatbot_flask/35_kobert-wellness-text-classification.pth
+chatbot_flask/emotion_model.pt
+chatbot_flask/kobert.pt
