@@ -1,8 +1,9 @@
 import styled from 'styled-components';
 import DiaryResult from '../components/emotionResult/DiaryResult';
 import ProgressBar from '../components/emotionResult/ProgressBar';
+import {AnalysisInfoType} from '../../types/diary/analysisInfoType';
 import { ChickenImage } from '../assets/icons';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { useAppSelector } from '../redux/configStore.hooks';
@@ -10,10 +11,15 @@ import { useAppSelector } from '../redux/configStore.hooks';
 function EmotionResult() {
     const {diaryId} = useParams<{diaryId : string}>();
     const user = useAppSelector((state) => state.user.userData);
+    const [emotionList, setEmotionList] = useState<{ key: string; value: any; }[]>([]);
+    const [diaryData, setDiaryData] = useState<AnalysisInfoType>();
     useEffect(() => {
         const initPage = async () => {
             const data = await getResultData("js7744", Number(diaryId));
-            console.log(data['content']);
+            console.log(data);
+            const newEmotionList = getEmotionList(data);
+            setEmotionList(newEmotionList as { key: string; value: any; }[]);
+            setDiaryData(data);
         }
         initPage();
     }, [user, diaryId])
@@ -21,20 +27,23 @@ function EmotionResult() {
             <EmotionResultContainer>
                 <UpperHorizontalContainer>
                     <ProgressBarContainer>
-                        <ProgressBar availableItem={1} barName='name1'></ProgressBar>
-                        <ProgressBar availableItem={2} barName='name2'></ProgressBar>
-                        <ProgressBar availableItem={3} barName='name3'></ProgressBar>
-                        <ProgressBar availableItem={4} barName='name4'></ProgressBar>
+                    {emotionList.length > 0 && (
+                        <>
+                            <ProgressBar availableItem={emotionList[0].value} barName={emotionList[0].key}></ProgressBar>
+                            <ProgressBar availableItem={emotionList[1].value} barName={emotionList[1].key}></ProgressBar>
+                            <ProgressBar availableItem={emotionList[2].value} barName={emotionList[2].key}></ProgressBar>
+                            <ProgressBar availableItem={emotionList[3].value} barName={emotionList[3].key}></ProgressBar>
+                        </>
+                    )}
                     </ProgressBarContainer>
-                    <DiaryResult></DiaryResult>
+                    <DiaryResult text={diaryData?.content}></DiaryResult>
                 </UpperHorizontalContainer>
                 <RowWrapper>
                     <ChickenImageResized></ChickenImageResized>
                     <ChickenWordWrapper>
                         <ChickenWord></ChickenWord>
                         <ChickenWordContext>
-                            잠을 못 자는 것만큼 힘든 게 없죠. <br/>
-                            너무 힘들면 잠깐 산책이라도 하는 건 어떨까요?
+                            {diaryData?.resultComment}
                         </ChickenWordContext>
                     </ChickenWordWrapper>
                 </RowWrapper>
@@ -44,7 +53,39 @@ function EmotionResult() {
 
 export default EmotionResult;
 
-//const getEmotionList = (data : )
+const getEmotionList = (data : object) =>{
+    const emotionList = [];
+    for (const [ENkey, value] of Object.entries(data)) {
+        let key = '';
+        switch(ENkey){
+            case 'fear': key = '두려움'; break;
+            case 'happiness': key = '행복'; break;
+            case 'neutrality': key = '중립'; break;
+            case 'sadness': key = '슬픔'; break;
+            case 'surprised': key = '놀람'; break;
+            case 'anger': key = '분노'; break;
+            case 'disgust': key = '혐오'; break;
+            default:
+                continue;
+        }
+        emotionList.push({key, value});
+    }
+    //emotionList에서 value가 가장 큰 4개를 뽑고 같으면 사전순으로 4개를 채운다.
+    emotionList.sort((a, b) => b.value - a.value);
+    if(emotionList.length > 4){
+        emotionList.splice(4, emotionList.length - 4);
+    }
+    else if(emotionList.length < 4){
+        const temp = ['fear', 'happiness', 'neutrality', 'sadness', 'surprised', 'anger', 'disgust'];
+        for(let i = 0; i < emotionList.length; i++){
+            temp.splice(temp.indexOf(emotionList[i].key), 1);
+        }
+        for(let i = 0; i < 4 - emotionList.length; i++){
+            emotionList.push({key: temp[i], value: 0});
+        }
+    }
+    return emotionList;
+}
 
 const getResultData = async (userId:string, diaryId:number) => {
     try {

@@ -5,25 +5,7 @@ function InnerDiaryResult(props: any) {
         <InnerDiaryResultContainer>
             <DiaryContextWrapper>    
                 <DiaryContext>
-                    test test test test test test test test test test test test test test test test test test test test test test test test test test  <br/>
-                    test <br/>
-                    test <br/>
-                    test <br/>
-                    test <br/>
-                    test <br/>
-                    test <br/>
-                    test <br/>
-                    test <br/>
-                    test <br/>
-                    test <br/>
-                    t <br/>
-                    test <br/>
-                    test <br/>
-                    test <br/>
-                    test <br/>
-                    test <br/>
-                    test <br/>
-                    test <br/>
+                    {props.text}
                 </DiaryContext>
             </DiaryContextWrapper>
         </InnerDiaryResultContainer>

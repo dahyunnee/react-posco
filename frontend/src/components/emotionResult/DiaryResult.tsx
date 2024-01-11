@@ -11,7 +11,7 @@ function DiaryResult(props: any)  {
                     {today}
                 </DiaryDay>
             </DiaryDayWrapper>
-            <InnerDiaryResult>
+            <InnerDiaryResult text={props.text}>
             </InnerDiaryResult>
         </DiaryResultContainer>
     )
