@@ -1,5 +1,5 @@
 import { styled } from 'styled-components';
-import { SpeechBubble, IconUserName } from '../assets/icons';
+import { SpeechBubble, IconUserName, ChickenImage, WeatherRectangle } from '../assets/icons';
 import { useNavigate } from 'react-router-dom';
 
 function DiaryPage() {
@@ -8,9 +8,17 @@ function DiaryPage() {
 
     return (
         <DiaryPageWrapper>
-            <ComponentWrapper>
-                
-            </ComponentWrapper>
+            <LeftComponentWrapper>
+                <ImageTextWrapper>
+                    <WeatherRectangle></WeatherRectangle>
+                    <Text>🌈 오늘의 날씨</Text>
+                </ImageTextWrapper>
+                <ImageTextWrapper>
+                    <SpeechBubble></SpeechBubble>
+                    <Text>오늘은 당신에게 <br/> 어떤 날이었나요?</Text>
+                </ImageTextWrapper>
+                <ChickenImage></ChickenImage>
+            </LeftComponentWrapper>
             <ComponentWrapper>
                 <DiaryDayWrapper>
                     <DiaryDay>
@@ -23,7 +31,7 @@ function DiaryPage() {
                 <SendButtonWrapper>
                     <Button onClick={() => navigate('/result/1')}>
                         <IconUserName />
-                        <ButtonText>✏️ SEND</ButtonText>
+                        <Text>✏️ SEND</Text>
                     </Button>
                 </SendButtonWrapper>
             </ComponentWrapper>
@@ -44,6 +52,24 @@ const DiaryPageWrapper = styled.p`
     
     padding: 1rem 1.5rem 1rem 1.5rem; 
     margin: 10px 10px 10px 10px;
+`;
+
+const LeftComponentWrapper = styled.p`
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+    border-radius: 30px;
+    width: 30%;
+
+    font-weight: 600;
+    font-size: 0.8rem;
+    overflow: hidden;
+
+    padding: 2rem 0.5rem 2rem 0.5rem;
+    margin: 10px 10px 10px 10px;
+    gap: 30px;
+
+    background-color: ${({ theme }) => theme.color.white};
 `;
 
 const ComponentWrapper = styled.p`
@@ -83,7 +109,7 @@ const Button = styled.button`
     border: none;
 `;
 
-const ButtonText = styled.span`
+const Text = styled.span`
     font-size: 1.7rem;
     font-weight: ${({ theme }) => theme.fontWeight.semiBold};
     color: ${(props) => props.theme.color.black};
@@ -97,6 +123,20 @@ const ButtonText = styled.span`
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+`;
+
+const ImageTextWrapper = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    position: relative;
+
+    width: 50%;
+    height: 30%;
+
+    background: none;
+    border: none;
 `;
 
 const DiaryDayWrapper = styled.div`
