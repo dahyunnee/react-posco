@@ -12,15 +12,22 @@ function Header() {
     
     return (
         <HeaderWrapper>
-            {location.pathname === '/' ? (
+            {location.pathname === '/calendar' ? (
                 <>
                     <div/>
                     <HeaderMonth>
                         {currentMonth}
                     </HeaderMonth>
-                    <HeaderMyPageButton onClick={() => navigate('/')}>
-                        <IconUserName/>
-                    </HeaderMyPageButton>
+                    <ButtonWrapper>
+                        <HeaderMyPageButton onClick={() => navigate('/diary')}>
+                            <IconUserName/>
+                            <ButtonText>📝 일기쓰기</ButtonText>
+                        </HeaderMyPageButton>
+                        <HeaderMyPageButton onClick={() => navigate('/chat')}>
+                            <IconUserName/>
+                            <ButtonText>🤖 채팅하기</ButtonText>
+                        </HeaderMyPageButton>
+                    </ButtonWrapper>
                 </>
             ) : location.pathname.includes('/result/') ? (
                 <>
@@ -30,13 +37,40 @@ function Header() {
                     <HeaderEmotionResult>
                         오늘의 일기 감정 분석 결과
                     </HeaderEmotionResult>
-                    <HeaderMyPageButton onClick={() => navigate('/')}>
+                    <HeaderMyPageButton onClick={() => navigate('/calendar')}>
                         <IconUserName />
+                        <ButtonText>👣 마이페이지</ButtonText>
                     </HeaderMyPageButton>
+                </>
+            ) : location.pathname === '/main' ? (
+                <>
+                    <div></div>
+                    <HeaderEmotionResult>
+                        MAIN
+                    </HeaderEmotionResult>
+                    <HeaderMyPageButton onClick={() => navigate('/calendar')}>
+                        <IconUserName />
+                        <ButtonText>👣 마이페이지</ButtonText>
+                    </HeaderMyPageButton>
+                </>
+            ) : location.pathname === '/' ? (
+                <>
+                    <div></div>
+                    <HeaderEmotionResult>
+                        LOGIN
+                    </HeaderEmotionResult>
+                    <div></div>
+                </>
+            ) : location.pathname === '/register' ? (
+                <>
+                    <div></div>
+                    <HeaderEmotionResult>
+                        SIGN UP
+                    </HeaderEmotionResult>
+                    <div></div>
                 </>
             ) : (
                 <>
-                    
                 </>
             )}
         </HeaderWrapper>
@@ -86,6 +120,8 @@ const HeaderMyPageButton = styled.button`
     justify-content: center;
     align-items: center;
 
+    position: relative;
+
     width: 10rem;
     height: 4rem;
 
@@ -109,3 +145,24 @@ const getCurrentMonth = () => {
 
     return monthNames[currentDate.getMonth()];
 };
+
+const ButtonText = styled.span`
+    font-size: 1.4rem;
+    font-weight: ${({ theme }) => theme.fontWeight.semiBold};
+    color: ${(props) => props.theme.color.black};
+    font-family: OmyuPretty;
+
+    position: absolute;
+    top: 47%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+`;
+
+const ButtonWrapper = styled.div`
+    display: flex;
+    gap: 2rem;
+`;

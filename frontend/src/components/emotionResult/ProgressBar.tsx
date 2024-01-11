@@ -32,7 +32,6 @@ const ProgressBarContainer = styled.div`
     overflow: hidden;
     height: 20px;
 
-
     background-color: ${({ theme }) => theme.color.background};
     border-radius: 17px;
 
