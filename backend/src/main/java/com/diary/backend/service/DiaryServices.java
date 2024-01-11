@@ -221,6 +221,44 @@ public class DiaryServices {
         return ResponseEntity.ok().body(diaryListDto);
     }
 
+    public ResponseEntity<?> getDiaryCalendarList(String userId, YearMonth searchMonth) {
+        UserEntity userEntity = userRepository.findByUserId(userId);
+        if(userEntity == null){
+            return ResponseEntity.badRequest().body(DiaryStatus.INVALID_USER_ID);
+        }
+        CalendarInfoList calendarInfoList = new CalendarInfoList();
+        EmotionDto emotionDto = new EmotionDto();
+        List<DiaryEntity> diaryEntityList = diaryRepository.findByAuthor(userRepository.findByUserId(userId));
+        for(DiaryEntity diaryEntity : diaryEntityList){
+            AnalysisEntity analysisEntity = analysisRepository.findByDiaryId(diaryEntity);
+            EmotionEntity emotionEntity = emotionRepository.findByAnalysisId(analysisEntity);
+            if(diaryEntity.getWriteDate().toLocalDateTime().getYear() != searchMonth.getYear() || diaryEntity.getWriteDate().toLocalDateTime().getMonth() != searchMonth.getMonth()){
+                continue;
+            }
+            CalendarInfo calendarInfo = new CalendarInfo();
+            calendarInfo.writeDate = diaryEntity.getWriteDate().toLocalDateTime().toLocalDate().toString();
+            emotionDto.fear += emotionEntity.getFear();
+            emotionDto.surprised += emotionEntity.getSurprised();
+            emotionDto.anger += emotionEntity.getAnger();
+            emotionDto.sadness += emotionEntity.getSadness();
+            emotionDto.neutrality += emotionEntity.getNeutrality();
+            emotionDto.happiness += emotionEntity.getHappiness();
+            emotionDto.disgust += emotionEntity.getDisgust();
+
+            calendarInfoList.calendarList.add(calendarInfo);
+        }
+        for(CalendarInfo calendarInfo : calendarInfoList.calendarList){
+            calendarInfo.fear = emotionDto.fear;
+            calendarInfo.surprised = emotionDto.surprised;
+            calendarInfo.anger = emotionDto.anger;
+            calendarInfo.sadness = emotionDto.sadness;
+            calendarInfo.neutrality = emotionDto.neutrality;
+            calendarInfo.happiness = emotionDto.happiness;
+            calendarInfo.disgust = emotionDto.disgust;
+        }
+        return ResponseEntity.ok().body(calendarInfoList);
+    }
+
     public ResponseEntity<?> getDiaryAnalysis(String userId, long diaryId) {
         UserEntity userEntity = userRepository.findByUserId(userId);
         if(userEntity == null){

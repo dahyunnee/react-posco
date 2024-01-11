@@ -1,17 +1,56 @@
 import { styled } from 'styled-components';
 import { SpeechBubble, IconUserName, ChickenImage, WeatherRectangle } from '../assets/icons';
 import { useNavigate } from 'react-router-dom';
+import { DiarySaveBodyType } from '../../types/diary/diaryInfoType';
+import axios from 'axios';
+import { useContext, useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { SignupType } from '../../types/user/signupType';
+import { useAppSelector } from '../redux/configStore.hooks';
 
 function DiaryPage() {
     const navigate = useNavigate();
     const today = getCurrentDay();
+    const user = useAppSelector((state) => state.user.userData);
+    const [weather, setWeather] = useState('');
+    const [diaryContext, setDiaryContext] = useState('');
+    useEffect(() => {
+        const fetchWeather = async () => {
+          const data = await getCurrentWeather(37.49552, 127.024548); 
+          console.log(data);
+          setWeather(data);
+        };
+      
+        fetchWeather();
+      }, []);
+
+    const onChangeContext = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        setDiaryContext(e.target.value);
+    };
+    const [isButtonDisabled, setButtonDisabled] = useState(false);
+
+
+    const [diarySaveBodyType, setDiarySaveBodyType] = useState<DiarySaveBodyType>();
+    const handleSaveBtnClick = async() =>{
+    setDiarySaveBodyType({
+        userId: "js7744",
+        date: getToday(),
+        weather: weather,
+        content: diaryContext,
+    });
+    if (diarySaveBodyType) {
+        setButtonDisabled(true)
+        const newDiaryId = await registerNewDiary(diarySaveBodyType);
+        navigate(`/result/${newDiaryId}`)
+    }
+    }
 
     return (
         <DiaryPageWrapper>
             <LeftComponentWrapper>
                 <ImageTextWrapper>
                     <WeatherRectangle></WeatherRectangle>
-                    <Text>🌈 오늘의 날씨</Text>
+                    <Text>🌈 {weather}</Text>
                 </ImageTextWrapper>
                 <ImageTextWrapper>
                     <SpeechBubble></SpeechBubble>
@@ -26,10 +65,10 @@ function DiaryPage() {
                     </DiaryDay>
                 </DiaryDayWrapper>
                 <WriteDiary>
-                    <DiaryContext rows={25} placeholder="Type your diary here..."></DiaryContext>
+                    <DiaryContext rows={25} placeholder="Type your diary here..." value={diaryContext} onChange={onChangeContext}></DiaryContext>
                 </WriteDiary>
                 <SendButtonWrapper>
-                    <Button onClick={() => navigate('/result/1')}>
+                    <Button onClick={() => handleSaveBtnClick()} disabled={isButtonDisabled}>
                         <IconUserName />
                         <Text>✏️ SEND</Text>
                     </Button>
@@ -218,3 +257,32 @@ const getCurrentDay = () => {
 
     return formattedResult;
 }
+
+const getToday = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0'); 
+    const day = String(today.getDate()).padStart(2, '0');
+    const formattedDate = `${year}-${month}-${day}`;
+    return formattedDate;
+}
+
+const getCurrentWeather = async (latitude:number, longitude:number) => {
+    try {
+      const response = await axios.get(`http://127.0.0.1:8080/diary/weather?lat=${latitude}&lon=${longitude}`);
+      return response.data;
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+const registerNewDiary = async (bodyInfo:DiarySaveBodyType) => {
+    try {
+        console.log(bodyInfo);
+        const response = await axios.post('http://127.0.0.1:8080/diary/register', bodyInfo);
+        return response.data;
+      } catch (error) {
+        console.error(error);
+      }
+  };
+

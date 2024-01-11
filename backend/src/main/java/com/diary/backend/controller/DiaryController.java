@@ -62,6 +62,11 @@ public class DiaryController {
         return diaryServices.getDiaryList(userId, searchMonth);
     }
 
+    @GetMapping("/diary/list/calendar")
+    public ResponseEntity<?> handleCalendarList(@RequestParam String userId, @RequestParam @DateTimeFormat(pattern = "yyyy-MM") YearMonth searchMonth, HttpSession session){
+        return diaryServices.getDiaryCalendarList(userId, searchMonth);
+    }
+
     @GetMapping("/diary/analysis")
     public ResponseEntity<?> handleDiaryAnalysis(@RequestParam String userId, @RequestParam long diaryId, HttpSession session){
         return diaryServices.getDiaryAnalysis(userId, diaryId);
