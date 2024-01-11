@@ -29,7 +29,6 @@ export default ProgressBar;
 
 const ProgressBarContainer = styled.div`
     width: 90%;
-    overflow: hidden;
     height: 20px;
 
     background-color: ${({ theme }) => theme.color.background};
