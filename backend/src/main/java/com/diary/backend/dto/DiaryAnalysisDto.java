@@ -5,7 +5,21 @@ import com.diary.backend.entity.DiaryEntity;
 import com.diary.backend.entity.EmotionEntity;
 
 public class DiaryAnalysisDto {
-    public DiaryEntity diaryInfo;
-    public AnalysisEntity  analysisInfo;
-    public EmotionEntity emotionInfo;
+
+    public long diaryId;
+    public String writeDate;
+    public String weather;
+    public String content;
+
+    public long analysisId;
+    public String resultComment;
+
+    public long emotionId;
+    public long fear;
+    public long surprised;
+    public long anger;
+    public long sadness;
+    public long neutrality;
+    public long happiness;
+    public long disgust;
 }

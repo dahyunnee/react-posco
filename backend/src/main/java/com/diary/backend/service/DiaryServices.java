@@ -195,6 +195,7 @@ public class DiaryServices {
             return ResponseEntity.badRequest().body(DiaryStatus.INVALID_USER_ID);
         }
         DiaryListDto diaryListDto = new DiaryListDto();
+        EmotionDto emotionDto = new EmotionDto();
         List<DiaryEntity> diaryEntityList = diaryRepository.findByAuthor(userRepository.findByUserId(userId));
         for(DiaryEntity diaryEntity : diaryEntityList){
             AnalysisEntity analysisEntity = analysisRepository.findByDiaryId(diaryEntity);
@@ -203,10 +204,20 @@ public class DiaryServices {
                 continue;
             }
             DiaryInfo diaryInfo = new DiaryInfo();
-            diaryInfo.diaryInfo = diaryEntity;
-            diaryInfo.emotionInfo = emotionEntity;
+            diaryInfo.diaryId = diaryEntity.getDiaryId();
+            diaryInfo.weather = diaryEntity.getWeather();
+            diaryInfo.content = diaryEntity.getContent();
+            diaryInfo.writeDate = diaryEntity.getWriteDate().toLocalDateTime().toLocalDate().toString();
+            emotionDto.fear += emotionEntity.getFear();
+            emotionDto.surprised += emotionEntity.getSurprised();
+            emotionDto.anger += emotionEntity.getAnger();
+            emotionDto.sadness += emotionEntity.getSadness();
+            emotionDto.neutrality += emotionEntity.getNeutrality();
+            emotionDto.happiness += emotionEntity.getHappiness();
+            emotionDto.disgust += emotionEntity.getDisgust();
             diaryListDto.diaryList.add(diaryInfo);
         }
+        diaryListDto.emotion = emotionDto;
         return ResponseEntity.ok().body(diaryListDto);
     }
 
@@ -228,9 +239,21 @@ public class DiaryServices {
             return ResponseEntity.badRequest().body(DiaryStatus.INVALID_EMOTION_ID.toString());
         }
         DiaryAnalysisDto diaryAnalysisDto = new DiaryAnalysisDto();
-        diaryAnalysisDto.diaryInfo = diaryEntity;
-        diaryAnalysisDto.analysisInfo = analysisEntity;
-        diaryAnalysisDto.emotionInfo = emotionEntity;
+        diaryAnalysisDto.diaryId = diaryEntity.getDiaryId();
+        diaryAnalysisDto.writeDate = diaryEntity.getWriteDate().toLocalDateTime().toLocalDate().toString();
+        diaryAnalysisDto.weather = diaryEntity.getWeather();
+        diaryAnalysisDto.content = diaryEntity.getContent();
+        diaryAnalysisDto.analysisId = analysisEntity.getAnalysisId();
+        diaryAnalysisDto.resultComment = analysisEntity.getResultComment();
+        diaryAnalysisDto.emotionId = emotionEntity.getEmotionId();
+        diaryAnalysisDto.fear = emotionEntity.getFear();
+        diaryAnalysisDto.surprised = emotionEntity.getSurprised();
+        diaryAnalysisDto.anger = emotionEntity.getAnger();
+        diaryAnalysisDto.sadness = emotionEntity.getSadness();
+        diaryAnalysisDto.neutrality = emotionEntity.getNeutrality();
+        diaryAnalysisDto.happiness = emotionEntity.getHappiness();
+        diaryAnalysisDto.disgust = emotionEntity.getDisgust();
+
         return ResponseEntity.ok().body(diaryAnalysisDto);
     }
 }
