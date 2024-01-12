@@ -346,7 +346,7 @@ def chating():
 # flask 외부 접속 허용, 방화벽 설정(인바운드 규칙 5000 추가)
 # debug=True로 설정하면 코드 변경이 있을 때마다 서버가 자동으로 재시작
 if __name__ == '__main__': 
-    app.run(host='127.0.0.1', port = 5000, debug=True)
+    app.run(host='127.0.0.1', port = 5001, debug=True)
 
 
 
