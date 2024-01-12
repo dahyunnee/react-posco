@@ -1,4 +1,3 @@
 
 chatbot_flask/app/gluon-nlp/
-*.pth
 *.pt

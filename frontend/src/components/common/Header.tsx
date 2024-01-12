@@ -9,31 +9,89 @@ function Header() {
     const navigate = useNavigate();
 
     const currentMonth = getCurrentMonth();
-    const currentDate = getCurrentDay();
     
     return (
         <HeaderWrapper>
-            {location.pathname === '/' ? (
+            {location.pathname === '/calendar' ? (
                 <>
                     <div/>
                     <HeaderMonth>
                         {currentMonth}
                     </HeaderMonth>
-                    <HeaderMyPageButton onClick={() => navigate('/')}>
-                        <IconUserName/>
-                    </HeaderMyPageButton>
+                    <ButtonWrapper>
+                        <HeaderMyPageButton onClick={() => navigate('/diary')}>
+                            <IconUserName/>
+                            <ButtonText>📝 일기쓰기</ButtonText>
+                        </HeaderMyPageButton>
+                        <HeaderMyPageButton onClick={() => navigate('/chat')}>
+                            <IconUserName/>
+                            <ButtonText>🤖 채팅하기</ButtonText>
+                        </HeaderMyPageButton>
+                    </ButtonWrapper>
                 </>
-            ) : (
+            ) : location.pathname.includes('/result/') ? (
                 <>
                     <HeaderBackButton onClick={() => navigate(-1)}>
                         <BackButton />
                     </HeaderBackButton>
-                    <HeaderToday>
-                        {currentDate}
-                    </HeaderToday>
-                    <HeaderMyPageButton onClick={() => navigate('/')}>
+                    <HeaderEmotionResult>
+                        오늘의 일기 감정 분석 결과
+                    </HeaderEmotionResult>
+                    <HeaderMyPageButton onClick={() => navigate('/calendar')}>
                         <IconUserName />
+                        <ButtonText>👣 마이페이지</ButtonText>
                     </HeaderMyPageButton>
+                </>
+            ) : location.pathname === '/main' ? (
+                <>
+                    <div></div>
+                    <HeaderEmotionResult>
+                        MAIN
+                    </HeaderEmotionResult>
+                    <HeaderMyPageButton onClick={() => navigate('/calendar')}>
+                        <IconUserName />
+                        <ButtonText>👣 마이페이지</ButtonText>
+                    </HeaderMyPageButton>
+                </>
+            ) : location.pathname === '/' ? (
+                <>
+                    <div></div>
+                    <HeaderEmotionResult>
+                        LOGIN
+                    </HeaderEmotionResult>
+                    <div></div>
+                </>
+            ) : location.pathname === '/register' ? (
+                <>
+                    <div></div>
+                    <HeaderEmotionResult>
+                        SIGN UP
+                    </HeaderEmotionResult>
+                    <div></div>
+                </>
+            ) : location.pathname === '/diary' ? (
+                <>
+                    <div></div>
+                    <HeaderEmotionResult>
+                        일기쓰기
+                    </HeaderEmotionResult>
+                    <div></div>
+                </>
+            ) : location.pathname === '/chat' ? (
+                <>
+                    <HeaderBackButton onClick={() => navigate(-1)}>
+                        <BackButton />
+                    </HeaderBackButton>
+                    <HeaderEmotionResult>
+                        챗봇 채팅하기
+                    </HeaderEmotionResult>
+                    <HeaderMyPageButton onClick={() => navigate('/calendar')}>
+                        <IconUserName />
+                        <ButtonText>👣 마이페이지</ButtonText>
+                    </HeaderMyPageButton>
+                </>
+            ) : (
+                <>
                 </>
             )}
         </HeaderWrapper>
@@ -83,6 +141,8 @@ const HeaderMyPageButton = styled.button`
     justify-content: center;
     align-items: center;
 
+    position: relative;
+
     width: 10rem;
     height: 4rem;
 
@@ -90,7 +150,7 @@ const HeaderMyPageButton = styled.button`
     border: none;
 `;
 
-const HeaderToday = styled.h1`
+const HeaderEmotionResult : any = styled.h1`
     color: ${(props) => props.theme.color.black};
     font-size: 2.5rem;
     font-weight: ${(props) => props.theme.fontWeight.bold};
@@ -107,36 +167,23 @@ const getCurrentMonth = () => {
     return monthNames[currentDate.getMonth()];
 };
 
-const getCurrentDay = () => {
-    const currentDate = new Date();
+const ButtonText = styled.span`
+    font-size: 1.4rem;
+    font-weight: ${({ theme }) => theme.fontWeight.semiBold};
+    color: ${(props) => props.theme.color.black};
+    font-family: OmyuPretty;
 
-    // 월 이름 매핑
-    const monthNames = {
-        January: '1월',
-        February: '2월',
-        March: '3월',
-        April: '4월',
-        May: '5월',
-        June: '6월',
-        July: '7월',
-        August: '8월',
-        September: '9월',
-        October: '10월',
-        November: '11월',
-        December: '12월'
-    };
+    position: absolute;
+    top: 47%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 
-  // 날짜 형식화
-    const formattedDate = new Intl.DateTimeFormat('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        weekday: 'long'
-    }).format(currentDate);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+`;
 
-    const [weekday, month, day, year] = formattedDate.split(/,?\s/);
-    const newMonth = monthNames[month as keyof typeof monthNames]; 
-    const formattedResult = `${year}년 ${newMonth} ${day}일 ${weekday}`;
-
-    return formattedResult;
-}
+const ButtonWrapper = styled.div`
+    display: flex;
+    gap: 2rem;
+`;
