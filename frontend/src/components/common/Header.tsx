@@ -77,6 +77,19 @@ function Header() {
                     </HeaderEmotionResult>
                     <div></div>
                 </>
+            ) : location.pathname === '/chat' ? (
+                <>
+                    <HeaderBackButton onClick={() => navigate(-1)}>
+                        <BackButton />
+                    </HeaderBackButton>
+                    <HeaderEmotionResult>
+                        챗봇 채팅하기
+                    </HeaderEmotionResult>
+                    <HeaderMyPageButton onClick={() => navigate('/calendar')}>
+                        <IconUserName />
+                        <ButtonText>👣 마이페이지</ButtonText>
+                    </HeaderMyPageButton>
+                </>
             ) : (
                 <>
                 </>
