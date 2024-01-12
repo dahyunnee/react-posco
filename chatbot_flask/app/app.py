@@ -4,6 +4,7 @@ import json
 
 #-- model 관련 import
 import numpy as np
+from collections import Counter
 
 import torch
 from torch import nn
@@ -108,54 +109,71 @@ def diaryEmotion():
     print('-' * 100)
 
     #-- emotion_model load & 평가 모드 설정
-    emotion_model = torch.load("../emotion_model.pt", map_location=device)
+    emotion_model = torch.load("../15epoch_kobert_emotion.pt", map_location=device)
     emotion_model.eval()
     print("emotion_model OK")
 
     # POST 요청에서 데이터 추출
     predict_sentence = request.form['input_text']
-    print(predict_sentence)
+    sentences = predict_sentence.splitlines(False)
+    print(sentences)
+    print()
 
-    # 데이터셋 구성
-    data = [predict_sentence, '0']
-    dataset_another = [data]
+    emotions = []  # 감정 결과를 저장할 리스트
 
-    another_test = BERTDataset(dataset_another, 0, 1, tok, vocab, max_len, True, False)
-    test_dataloader = torch.utils.data.DataLoader(another_test, batch_size=batch_size, num_workers=5)
+    for sentence in sentences:
+        # 데이터셋 구성
+        data = [sentence, '0']
+        dataset_another = [data]
 
-    emotion_model.eval()
+        another_test = BERTDataset(dataset_another, 0, 1, tok, vocab, max_len, True, False)
+        test_dataloader = torch.utils.data.DataLoader(another_test, batch_size=batch_size, num_workers=5)
 
-    for batch_id, (token_ids, valid_length, segment_ids, label) in enumerate(test_dataloader):
-        token_ids = token_ids.long().to(device)
-        segment_ids = segment_ids.long().to(device)
+        emotion_model.eval()
 
-        valid_length= valid_length
-        label = label.long().to(device)
+        for batch_id, (token_ids, valid_length, segment_ids, label) in enumerate(test_dataloader):
+            token_ids = token_ids.long().to(device)
+            segment_ids = segment_ids.long().to(device)
 
-        out = emotion_model(token_ids, valid_length, segment_ids)
+            valid_length = valid_length
+            label = label.long().to(device)
 
-        for i in out:
-            logits=i
-            logits = logits.detach().cpu().numpy()
+            out = emotion_model(token_ids, valid_length, segment_ids)
 
-            if np.argmax(logits) == 0:
-                result = "공포"
-            elif np.argmax(logits) == 1:
-                result = "놀람"
-            elif np.argmax(logits) == 2:
-                result = "분노"
-            elif np.argmax(logits) == 3:
-                result = "슬픔"
-            elif np.argmax(logits) == 4:
-                result = "중립"
-            elif np.argmax(logits) == 5:
-                result = "행복"
-            elif np.argmax(logits) == 6:
-                result = "혐오"
+            for i in out:
+                logits = i
+                logits = logits.detach().cpu().numpy()
 
-        print(">> 일기에서 느껴지는 감정 : " + result)
-        print('-' * 100)
-        return jsonify({'class': str(np.argmax(logits)), 'result': result})
+                if np.argmax(logits) == 0:
+                    result = "fear"
+                elif np.argmax(logits) == 1:
+                    result = "surprised"
+                elif np.argmax(logits) == 2:
+                    result = "anger"
+                elif np.argmax(logits) == 3:
+                    result = "sadness"
+                elif np.argmax(logits) == 4:
+                    result = "neutrality"
+                elif np.argmax(logits) == 5:
+                    result = "happiness"
+                elif np.argmax(logits) == 6:
+                    result = "혐오"
+                
+                emotions.append(result)
+
+            print(sentence)
+            print(">> 이 문장에서 느껴지는 감정 : " + result+"\n")
+
+    emotion_counts = Counter(emotions)  # 감정 카운트
+    print(">> 감정 통계 : ", emotion_counts)
+    print('-' * 100)
+    return jsonify({'emotion_counts': dict(emotion_counts)})
+
+# 오늘은 너무 슬픈 날이었어
+# 친구가 당일에 약속을 취소했거든
+# 사실 요즘들어 연락이 잘 안된다는 느낌이 있었거든
+# 속상해.. 내 잘못같고…
+# 그래도 오늘 날씨가 맑아서 기분은 좋아!!
 #========================================================================================#
 
 
@@ -302,7 +320,7 @@ def chating():
     tokenizer = BertTokenizer.from_pretrained("monologg/kobert")
     data = kobert_input(tokenizer, input_text, device, 512)
     
-    chat_model = torch.load("../kobert.pt", map_location=device)
+    chat_model = torch.load("../35epoch_kobert_chatbot.pt", map_location=device)
     chat_model.eval()
     print("chat_model OK")
 
@@ -328,7 +346,7 @@ def chating():
 # flask 외부 접속 허용, 방화벽 설정(인바운드 규칙 5000 추가)
 # debug=True로 설정하면 코드 변경이 있을 때마다 서버가 자동으로 재시작
 if __name__ == '__main__': 
-    app.run(host='127.0.0.1', port = 5000, debug=True)
+    app.run(host='127.0.0.1', port = 5001, debug=True)
 
 
 
