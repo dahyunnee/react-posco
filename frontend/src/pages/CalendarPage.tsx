@@ -68,10 +68,6 @@ const renderEventContent = (eventInfo: EventContentArg) => {
   );
 };
 const CalendarPage = () => {
-  // export default class CalendarPage extends PureComponent {
-  // const users = useAppSelector((state) => state.user.userData);
-
-  //    static jsfiddleUrl = 'https://jsfiddle.net/alidingling/xqjtetw0/';
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const user = useAppSelector((state) => state.user.userData);
@@ -99,11 +95,9 @@ const CalendarPage = () => {
       .get(
         `http://localhost:8080/diary/list/calendar?userId=${user.id}&searchMonth=2024-01`
       )
-      .then((res) => {
-        console.log(res.data);
+      .then((res) => {       
         setCalendarData(res.data);
       })
-
       .catch((e) => {
         console.log(e);
       });
@@ -121,15 +115,15 @@ const CalendarPage = () => {
           "이번 달 행복 지수": calendar.happiness,
           "이번 달 우울 지수": calendar.sadness + calendar.anger,
         });
-        setFearCount(fearCount + calendar.fear);
-        setHappyCount(happyCount + calendar.happiness);
-        setAngerCount(angerCount + calendar.anger);
-        setSurpriseCount(surpriseCount + calendar.surprised);
-        setSadCount(sadCount + calendar.sadness);
+        setFearCount((prevFearCount) => fearCount + calendar.fear);
+        setHappyCount((prevHappyCount) => happyCount + calendar.happiness);
+        setAngerCount((prevAngerCount) => angerCount + calendar.anger);
+        setSurpriseCount((prevSurpriseCount) => surpriseCount + calendar.surprised);
+        setSadCount((prevSadCount) => sadCount + calendar.sadness);
         setStartDate(new Date(calendar.writeDate));
         let tempDate = new Date(calendar.writeDate);
         tempDate.setDate(tempDate.getDate() + 3);
-        setEndDate(tempDate)
+        setEndDate(tempDate);
         tempEvents.push({
           title: "📕",
           start: startDate,
@@ -144,20 +138,21 @@ const CalendarPage = () => {
             "이번 달 행복 지수": calendar.happiness,
             "이번 달 우울 지수": calendar.sadness + calendar.anger,
           });
-          setFearCount(fearCount + calendar.fear);
-          setHappyCount(happyCount + calendar.happiness);
-          setAngerCount(angerCount + calendar.anger);
-          setSurpriseCount(surpriseCount + calendar.surprised);
-          setSadCount(sadCount + calendar.sadness);
-          let startDate = new Date(calendar.writeDate);
-          let endDate = new Date(calendar.writeDate);
-          tempEvents.push({
-            title: "📕",
-            start: startDate,
-            end: new Date(endDate.setDate(endDate.getDate() + 3)),
-            color: "pink",
-            allDay: true,
-          });
+        setFearCount((prevFearCount) => fearCount + calendar.fear);
+        setHappyCount((prevHappyCount) => happyCount + calendar.happiness);
+        setAngerCount((prevAngerCount) => angerCount + calendar.anger);
+        setSurpriseCount((prevSurpriseCount) => surpriseCount + calendar.surprised);
+        setSadCount((prevSadCount) => sadCount + calendar.sadness);
+
+        let startDate = new Date(calendar.writeDate);
+        let endDate = new Date(calendar.writeDate);
+        tempEvents.push({
+          title: "📕",
+          start: startDate,
+          end: new Date(endDate.setDate(endDate.getDate() + 3)),
+          color: "pink",
+          allDay: true,
+        });
         });
       }
       setData(tempData);
@@ -169,11 +164,18 @@ const CalendarPage = () => {
   };
 
   useEffect(() => {
-    getResultHandler()
-    // .then(()=>{settingData()});
-    .then(() => setTimeout(()=>{
-        settingData()}, 1000));
+    const fetchData = async () => {
+      await getResultHandler();
+    };
+  
+    fetchData();
   }, []);
+
+  useEffect(() => {
+    if (calendarData !== null) {
+      settingData();
+    }
+  }, [calendarData]);
 
   return (
     <Layout>
@@ -197,10 +199,6 @@ const CalendarPage = () => {
                   verticalAlign="middle"
                   align="right"
                   iconSize={7}
-                  // payload={[
-                  //     { value: `남 ${manCount}%`, type: 'square', color: '#EB6927' },
-                  //     { value: `여 ${womanCount}%`, type: 'square', color: '#2D8CFF' },
-                  // ]}
                 />
                 <Pie
                   data={sexRatioData}
@@ -322,40 +320,35 @@ const CalendarPage = () => {
   );
 };
 export default CalendarPage;
+
 const Layout = styled.div`
   margin-top: 15px;
-  // border: 5px solid #ffcc5c;
   display: flex;
-  // height: 400px;
   color: ${(props) => props.theme.color.black};
-  // font-size: 3rem;
   font-weight: ${(props) => props.theme.fontWeight.semiBold};
   font-family: OmyuPretty;
 `;
+
 const Left = styled.div`
   background-color: #fff3da;
   border-radius: 30px;
   border: 30px solid #fff3da;
   width: 45%;
-  // padding:1%;
   margin-bottom: 1%;
   margin-right: 1%;
 `;
+
 const Right = styled.div`
   width: 45%;
   margin-bottom: 1%;
-  // padding:1%;
 `;
+
 const Title = styled.div`
   background-color: #ffedc7;
   border-radius: 10px;
   border: 10px solid #ffedc7;
   height: 5%;
   width: 90%;
-  // padding:1%;
   margin-bottom: 20%;
   margin-right: 1%;
-  // position:absolute;
-  // left:50%;
-  // transform:translate(-50%);
 `;
