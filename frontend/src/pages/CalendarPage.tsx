@@ -27,31 +27,33 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import ProgressBar from "../components/emotionResult/ProgressBar";
 import { CalendarType } from "../../types/calendar/calendarType";
 import { CalendarListType } from "../../types/calendar/calendarListType";
+import { CalendarEventType } from "../../types/calendar/calendarEventType";
+import { CalendarDataType } from "../../types/calendar/calendarDataType";
 import { getCalendarAction } from "../redux/modules/calendar";
 // import { useNavigate } from "react-router-dom";
 
-const data = [
-  { 일: "광진구", "이번 달 행복 지수": 32760, "이번 달 우울 지수": 34000 },
-  // { 군구: '동대문구', '이번 달 행복 지수': 30480, '이번 달 우울 지수': 56000},
-  // { 군구: '마포구', '이번 달 행복 지수': 27250, '이번 달 우울 지수': 23000},
-  // { 군구: '구로구', '이번 달 행복 지수': 49870, '이번 달 우울 지수': 67000},
-  // { 군구: '강남구', '이번 달 행복 지수': 51420, '이번 달 우울 지수': 55000},
-];
-const events = [
-  {
-    title: "📕",
-    start: new Date("2024-1-22"),
-    end: new Date("2024-1-23"),
-    color: "pink",
-    allDay: true,
-  },
-  {
-    title: "Meeting2",
-    start: new Date("2024-1-30"),
-    end: new Date("2024-1-31"),
-    color: "#2D8CFF",
-  },
-];
+// const data = [
+//   { 일: "2024-01-01", "이번 달 행복 지수": 0, "이번 달 우울 지수": 0 },
+//   // { 군구: '동대문구', '이번 달 행복 지수': 30480, '이번 달 우울 지수': 56000},
+//   // { 군구: '마포구', '이번 달 행복 지수': 27250, '이번 달 우울 지수': 23000},
+//   // { 군구: '구로구', '이번 달 행복 지수': 49870, '이번 달 우울 지수': 67000},
+//   // { 군구: '강남구', '이번 달 행복 지수': 51420, '이번 달 우울 지수': 55000},
+// ];
+// const events = [
+//   {
+//     title: "📕",
+//     start: new Date("2024-1-22"),
+//     end: new Date("2024-1-23"),
+//     color: "pink",
+//     allDay: true,
+//   },
+//   {
+//     title: "Meeting2",
+//     start: new Date("2024-1-30"),
+//     end: new Date("2024-1-31"),
+//     color: "#2D8CFF",
+//   },
+// ];
 
 // interface MyEventContentArg {
 //     event: EventApi; // 여기서 EventApi는 FullCalendar에서 제공하는 이벤트 객체의 타입입니다.
@@ -79,6 +81,11 @@ const CalendarPage = () => {
   const [angerCount, setAngerCount] = useState<number>(0);
   const [surpriseCount, setSurpriseCount] = useState<number>(0);
   const [sadCount, setSadCount] = useState<number>(0);
+  const [startDate, setStartDate] = useState<Date>(new Date());
+  const [endDate, setEndDate] = useState<Date>(new Date());
+  const [events, setEvents] = useState<CalendarEventType[]>();
+  const [data, setData] = useState<CalendarDataType[]>();
+
   const sexRatioData = [
     { name: "불안", value: fearCount, fill: "#B588FF" },
     { name: "놀람", value: surpriseCount, fill: "#FFEC88" },
@@ -90,11 +97,12 @@ const CalendarPage = () => {
   const getResultHandler = async () => {
     await axios
       .get(
-        `http://localhost:8080/diary/list/calendar?userId=aaaa&searchMonth=2024-01`
+        `http://localhost:8080/diary/list/calendar?userId=${user.id}&searchMonth=2024-01`
       )
       .then((res) => {
         console.log(res.data);
         setCalendarData(res.data);
+        console.log(calendarData);
       })
 
       .catch((e) => {
@@ -105,10 +113,12 @@ const CalendarPage = () => {
   const settingData = () => {
     console.log("유저", user.id);
     console.log(calendarData);
+    const tempData = [];
+    const tempEvents = [];
     if (calendarData != null) {
       if (!Array.isArray(calendarData)) {
         const calendar: CalendarType = calendarData.calendarList[0];
-        data.push({
+        tempData.push({
           일: calendar.writeDate,
           "이번 달 행복 지수": calendar.happiness,
           "이번 달 우울 지수": calendar.sadness + calendar.anger,
@@ -118,17 +128,20 @@ const CalendarPage = () => {
         setAngerCount(angerCount + calendar.anger);
         setSurpriseCount(surpriseCount + calendar.surprised);
         setSadCount(sadCount + calendar.sadness);
+        setStartDate(new Date(calendar.writeDate));
         let tempDate = new Date(calendar.writeDate);
-        events.push({
+        tempDate.setDate(tempDate.getDate() + 3);
+        setEndDate(tempDate)
+        tempEvents.push({
           title: "📕",
-          start: tempDate,
-          end: new Date(tempDate.setDate(tempDate.getDate() + 3)),
+          start: startDate,
+          end: endDate,
           color: "pink",
           allDay: true,
         });
       } else {
         calendarData.forEach((calendar: CalendarType) => {
-          data.push({
+        tempData.push({
             일: calendar.writeDate,
             "이번 달 행복 지수": calendar.happiness,
             "이번 달 우울 지수": calendar.sadness + calendar.anger,
@@ -138,25 +151,30 @@ const CalendarPage = () => {
           setAngerCount(angerCount + calendar.anger);
           setSurpriseCount(surpriseCount + calendar.surprised);
           setSadCount(sadCount + calendar.sadness);
-          let tempDate = new Date(calendar.writeDate);
-          events.push({
+          let startDate = new Date(calendar.writeDate);
+          let endDate = new Date(calendar.writeDate);
+          tempEvents.push({
             title: "📕",
-            start: tempDate,
-            end: new Date(tempDate.setDate(tempDate.getDate() + 3)),
+            start: startDate,
+            end: new Date(endDate.setDate(endDate.getDate() + 3)),
             color: "pink",
             allDay: true,
           });
         });
       }
+      setData(tempData);
+      setEvents(tempEvents);
       console.log(fearCount, happyCount, angerCount, sadCount);
       console.log(data);
+      console.log(events);
     }
   };
 
   useEffect(() => {
     getResultHandler()
-      // .then(()=>{settingData()});
-      .then(() => settingData());
+    // .then(()=>{settingData()});
+    .then(() => setTimeout(()=>{
+        settingData()}, 1000));
   }, []);
 
   return (
@@ -209,10 +227,13 @@ const CalendarPage = () => {
             }}
           >
             <h1>이 달 마음 지수</h1>
-            <ProgressBar
+            {/* <ProgressBar
               style={{ width: "600px", height: "400px" }}
             ></ProgressBar>
-            <ProgressBar></ProgressBar>
+            <ProgressBar></ProgressBar> */}
+            <ProgressBar availableItem={happyCount} barName={"행복지수"}></ProgressBar>
+            <ProgressBar availableItem={sadCount} barName={"우울지수"}></ProgressBar>
+
             {/* <div >
                             <h1 style={{ marginBottom: '30px' }}>2023년도 사용자</h1>
                             <PieChart width={400} height={300}>
