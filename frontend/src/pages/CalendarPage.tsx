@@ -102,7 +102,6 @@ const CalendarPage = () => {
       .then((res) => {
         console.log(res.data);
         setCalendarData(res.data);
-        console.log(calendarData);
       })
 
       .catch((e) => {
@@ -112,7 +111,6 @@ const CalendarPage = () => {
 
   const settingData = () => {
     console.log("유저", user.id);
-    console.log(calendarData);
     const tempData = [];
     const tempEvents = [];
     if (calendarData != null) {
