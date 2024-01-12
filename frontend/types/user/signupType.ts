@@ -1,9 +1,7 @@
 export type SignupType = {
-    id: string;
+    userId: string;
     name: string;
     email: string;
     password: string;
     nickName: string;
-    level?: number;
-    exp?: number;
   };
