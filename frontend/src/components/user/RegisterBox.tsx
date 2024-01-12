@@ -131,7 +131,7 @@ const RegisterBox = () => {
           profile: "Basic_1",
         })
       ).then(() => {
-        navigate("/login");
+        navigate("/");
       });
     }
   };

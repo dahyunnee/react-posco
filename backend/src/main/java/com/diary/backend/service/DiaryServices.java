@@ -134,29 +134,13 @@ public class DiaryServices {
         }
         EmotionEntity emotionEntity = new EmotionEntity();
         emotionEntity.setAnalysisId(analysis);
-        switch(aiEmotionResDto.result){
-            case "공포":
-                emotionEntity.setFear(1);
-                break;
-            case "놀람":
-                emotionEntity.setSurprised(1);
-                break;
-            case "분노":
-                emotionEntity.setAnger(1);
-                break;
-            case "슬픔":
-                emotionEntity.setSadness(1);
-                break;
-            case "중립":
-                emotionEntity.setNeutrality(1);
-                break;
-            case "행복":
-                emotionEntity.setHappiness(1);
-                break;
-            case "혐오":
-                emotionEntity.setDisgust(1);
-                break;
-        }
+        emotionEntity.setFear(aiEmotionResDto.emotion_counts.fear);
+        emotionEntity.setSurprised(aiEmotionResDto.emotion_counts.surprised);
+        emotionEntity.setAnger(aiEmotionResDto.emotion_counts.anger);
+        emotionEntity.setSadness(aiEmotionResDto.emotion_counts.sadness);
+        emotionEntity.setNeutrality(aiEmotionResDto.emotion_counts.neutrality);
+        emotionEntity.setHappiness(aiEmotionResDto.emotion_counts.happiness);
+        emotionEntity.setDisgust(aiEmotionResDto.emotion_counts.disgust);
 
         emotionRepository.save(emotionEntity);
 
