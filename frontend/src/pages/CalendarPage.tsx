@@ -30,6 +30,7 @@ import { CalendarListType } from "../../types/calendar/calendarListType";
 import { CalendarEventType } from "../../types/calendar/calendarEventType";
 import { CalendarDataType } from "../../types/calendar/calendarDataType";
 import { getCalendarAction } from "../redux/modules/calendar";
+import {Loading} from "../components/common/Loading";
 // import { useNavigate } from "react-router-dom";
 
 // const data = [
@@ -67,11 +68,12 @@ const renderEventContent = (eventInfo: EventContentArg) => {
     </>
   );
 };
+
 const CalendarPage = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const user = useAppSelector((state) => state.user.userData);
-  const [calendarData, setCalendarData] = useState<CalendarListType | null>();
+  const [calendarData, setCalendarData] = useState<CalendarType[] | null>();
   const [fearCount, setFearCount] = useState<number>(0);
   const [happyCount, setHappyCount] = useState<number>(0);
   const [angerCount, setAngerCount] = useState<number>(0);
@@ -81,6 +83,7 @@ const CalendarPage = () => {
   const [endDate, setEndDate] = useState<Date>(new Date());
   const [events, setEvents] = useState<CalendarEventType[]>();
   const [data, setData] = useState<CalendarDataType[]>();
+  const [sum, setSum] = useState<number>(0);
 
   const sexRatioData = [
     { name: "불안", value: fearCount, fill: "#B588FF" },
@@ -97,6 +100,7 @@ const CalendarPage = () => {
       )
       .then((res) => {       
         setCalendarData(res.data);
+        // settingData();
       })
       .catch((e) => {
         console.log(e);
@@ -109,7 +113,7 @@ const CalendarPage = () => {
     const tempEvents = [];
     if (calendarData != null) {
       if (!Array.isArray(calendarData)) {
-        const calendar: CalendarType = calendarData.calendarList[0];
+        const calendar: CalendarType = calendarData[0];
         tempData.push({
           일: calendar.writeDate,
           "이번 달 행복 지수": calendar.happiness,
@@ -132,27 +136,30 @@ const CalendarPage = () => {
           allDay: true,
         });
       } else {
+        console.log("배열로 들어왔네");
         calendarData.forEach((calendar: CalendarType) => {
         tempData.push({
             일: calendar.writeDate,
             "이번 달 행복 지수": calendar.happiness,
             "이번 달 우울 지수": calendar.sadness + calendar.anger,
           });
-        setFearCount((prevFearCount) => fearCount + calendar.fear);
-        setHappyCount((prevHappyCount) => happyCount + calendar.happiness);
-        setAngerCount((prevAngerCount) => angerCount + calendar.anger);
-        setSurpriseCount((prevSurpriseCount) => surpriseCount + calendar.surprised);
-        setSadCount((prevSadCount) => sadCount + calendar.sadness);
+          console.log(fearCount, happyCount, angerCount, surpriseCount, sadCount);
+          setFearCount((prevFearCount) => fearCount + calendar.fear);
+          setHappyCount((prevHappyCount) => happyCount + calendar.happiness);
+          setAngerCount((prevAngerCount) => angerCount + calendar.anger);
+          setSurpriseCount((prevSurpriseCount) => surpriseCount + calendar.surprised);
+          setSadCount((prevSadCount) => sadCount + calendar.sadness);
+          console.log(fearCount, happyCount, angerCount, surpriseCount, sadCount);
 
-        let startDate = new Date(calendar.writeDate);
-        let endDate = new Date(calendar.writeDate);
-        tempEvents.push({
-          title: "📕",
-          start: startDate,
-          end: new Date(endDate.setDate(endDate.getDate() + 3)),
-          color: "pink",
-          allDay: true,
-        });
+          let startDate = new Date(calendar.writeDate);
+          let endDate = new Date(calendar.writeDate);
+          tempEvents.push({
+            title: "📕",
+            start: startDate,
+            end: new Date(endDate.setDate(endDate.getDate() + 1)),
+            color: "pink",
+            allDay: true,
+          });
         });
       }
       setData(tempData);
@@ -160,26 +167,45 @@ const CalendarPage = () => {
       console.log(fearCount, happyCount, angerCount, sadCount);
       console.log(data);
       console.log(events);
+      console.log(calendarData);
+      setSum(happyCount+sadCount);
     }
   };
 
   useEffect(() => {
-    const fetchData = async () => {
-      await getResultHandler();
-    };
-  
-    fetchData();
+    getResultHandler()
+    // .then(()=>{settingData()});
+    // .then(() =>
+    //     settingData());
   }, []);
 
   useEffect(() => {
-    if (calendarData !== null) {
-      settingData();
+    if (calendarData !== null && events !== null) {
+        settingData();
     }
   }, [calendarData]);
+  
+  useEffect(()=>{
+    console.log("fearCount",fearCount);
+  }, [fearCount]);
+
+  useEffect(()=>{
+    console.log("happyCount",happyCount);
+  }, [happyCount]);
+
+  useEffect(()=>{
+    console.log("angerCount",angerCount);
+  }, [angerCount]);
+  useEffect(()=>{
+    console.log("sadCount",sadCount);
+  }, [sadCount]);
 
   return (
+    <div>
+    {calendarData===undefined? <Loading/> :
     <Layout>
       <Left style={{ marginLeft: "50px" }}>
+        
         <FullCalendar
           plugins={[dayGridPlugin]}
           initialView="dayGridMonth"
@@ -227,37 +253,10 @@ const CalendarPage = () => {
               style={{ width: "600px", height: "400px" }}
             ></ProgressBar>
             <ProgressBar></ProgressBar> */}
-            <ProgressBar availableItem={happyCount} barName={"행복지수"}></ProgressBar>
-            <ProgressBar availableItem={sadCount} barName={"우울지수"}></ProgressBar>
+            <ProgressBar availableItem={happyCount/(40*sum)*100} barName={"행복지수"}></ProgressBar>
+            <ProgressBar availableItem={sadCount/(40*sum)*100} barName={"우울지수"}></ProgressBar>
 
-            {/* <div >
-                            <h1 style={{ marginBottom: '30px' }}>2023년도 사용자</h1>
-                            <PieChart width={400} height={300}>
-                                <Legend
-                                height={110}
-                                layout="vertical"
-                                verticalAlign="middle"
-                                align="right"
-                                iconSize={7}
-                                payload={[
-                                    { value: `남 ${manCount}%`, type: 'square', color: '#EB6927' },
-                                    { value: `여 ${womanCount}%`, type: 'square', color: '#2D8CFF' },
-                                ]}
-                                
-                                />
-                                <Pie
-                                data={sexRatioData}
-                                dataKey="value"
-                                nameKey="name"
-                                innerRadius={60}
-                                outerRadius={80}
-                                cx={80}
-                                cy={100}
-                                />
-
-                                <Tooltip />
-                            </PieChart>
-                        </div> */}
+            
           </Right>
         </div>
         <div style={{ display: "flex" }}>
@@ -316,7 +315,8 @@ const CalendarPage = () => {
           </Right>
         </div>
       </Right>
-    </Layout>
+    </Layout>}
+    </div>
   );
 };
 export default CalendarPage;
