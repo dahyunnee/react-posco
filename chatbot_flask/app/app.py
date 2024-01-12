@@ -157,7 +157,7 @@ def diaryEmotion():
                 elif np.argmax(logits) == 5:
                     result = "happiness"
                 elif np.argmax(logits) == 6:
-                    result = "혐오"
+                    result = "disgust"
                 
                 emotions.append(result)
 
