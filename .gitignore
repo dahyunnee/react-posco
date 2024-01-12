@@ -4,3 +4,4 @@ chatbot_flask/35_kobert-wellness-text-classification.pth
 chatbot_flask/emotion_model.pt
 chatbot_flask/kobert.pt
 backend/src/main/resources/application.properties
+*.pt

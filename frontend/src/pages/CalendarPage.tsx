@@ -68,15 +68,12 @@ const renderEventContent = (eventInfo: EventContentArg) => {
     </>
   );
 };
-const CalendarPage = () => {
-  // export default class CalendarPage extends PureComponent {
-  // const users = useAppSelector((state) => state.user.userData);
 
-  //    static jsfiddleUrl = 'https://jsfiddle.net/alidingling/xqjtetw0/';
+const CalendarPage = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const user = useAppSelector((state) => state.user.userData);
-  const [calendarData, setCalendarData] = useState<CalendarListType | null>();
+  const [calendarData, setCalendarData] = useState<CalendarType[] | null>();
   const [fearCount, setFearCount] = useState<number>(0);
   const [happyCount, setHappyCount] = useState<number>(0);
   const [angerCount, setAngerCount] = useState<number>(0);
@@ -86,6 +83,7 @@ const CalendarPage = () => {
   const [endDate, setEndDate] = useState<Date>(new Date());
   const [events, setEvents] = useState<CalendarEventType[]>();
   const [data, setData] = useState<CalendarDataType[]>();
+  const [sum, setSum] = useState<number>(0);
 
   const sexRatioData = [
     { name: "불안", value: fearCount, fill: "#B588FF" },
@@ -100,12 +98,10 @@ const CalendarPage = () => {
       .get(
         `http://localhost:8080/diary/list/calendar?userId=${user.id}&searchMonth=2024-01`
       )
-      .then((res) => {
-        console.log(res.data);
+      .then((res) => {       
         setCalendarData(res.data);
-        settingData();
+        // settingData();
       })
-
       .catch((e) => {
         console.log(e);
       });
@@ -113,26 +109,25 @@ const CalendarPage = () => {
 
   const settingData = () => {
     console.log("유저", user.id);
-    console.log(calendarData);
     const tempData = [];
     const tempEvents = [];
     if (calendarData != null) {
       if (!Array.isArray(calendarData)) {
-        const calendar: CalendarType = calendarData.calendarList[0];
+        const calendar: CalendarType = calendarData[0];
         tempData.push({
           일: calendar.writeDate,
           "이번 달 행복 지수": calendar.happiness,
           "이번 달 우울 지수": calendar.sadness + calendar.anger,
         });
-        setFearCount(fearCount + calendar.fear);
-        setHappyCount(happyCount + calendar.happiness);
-        setAngerCount(angerCount + calendar.anger);
-        setSurpriseCount(surpriseCount + calendar.surprised);
-        setSadCount(sadCount + calendar.sadness);
+        setFearCount((prevFearCount) => fearCount + calendar.fear);
+        setHappyCount((prevHappyCount) => happyCount + calendar.happiness);
+        setAngerCount((prevAngerCount) => angerCount + calendar.anger);
+        setSurpriseCount((prevSurpriseCount) => surpriseCount + calendar.surprised);
+        setSadCount((prevSadCount) => sadCount + calendar.sadness);
         setStartDate(new Date(calendar.writeDate));
         let tempDate = new Date(calendar.writeDate);
         tempDate.setDate(tempDate.getDate() + 3);
-        setEndDate(tempDate)
+        setEndDate(tempDate);
         tempEvents.push({
           title: "📕",
           start: startDate,
@@ -141,17 +136,21 @@ const CalendarPage = () => {
           allDay: true,
         });
       } else {
+        console.log("배열로 들어왔네");
         calendarData.forEach((calendar: CalendarType) => {
         tempData.push({
             일: calendar.writeDate,
             "이번 달 행복 지수": calendar.happiness,
             "이번 달 우울 지수": calendar.sadness + calendar.anger,
           });
-          setFearCount(fearCount + calendar.fear);
-          setHappyCount(happyCount + calendar.happiness);
-          setAngerCount(angerCount + calendar.anger);
-          setSurpriseCount(surpriseCount + calendar.surprised);
-          setSadCount(sadCount + calendar.sadness);
+          console.log(fearCount, happyCount, angerCount, surpriseCount, sadCount);
+          setFearCount((prevFearCount) => fearCount + calendar.fear);
+          setHappyCount((prevHappyCount) => happyCount + calendar.happiness);
+          setAngerCount((prevAngerCount) => angerCount + calendar.anger);
+          setSurpriseCount((prevSurpriseCount) => surpriseCount + calendar.surprised);
+          setSadCount((prevSadCount) => sadCount + calendar.sadness);
+          console.log(fearCount, happyCount, angerCount, surpriseCount, sadCount);
+
           let startDate = new Date(calendar.writeDate);
           let endDate = new Date(calendar.writeDate);
           tempEvents.push({
@@ -168,6 +167,8 @@ const CalendarPage = () => {
       console.log(fearCount, happyCount, angerCount, sadCount);
       console.log(data);
       console.log(events);
+      console.log(calendarData);
+      setSum(happyCount+sadCount);
     }
   };
 
@@ -179,9 +180,26 @@ const CalendarPage = () => {
   }, []);
 
   useEffect(() => {
-    settingData();
+    if (calendarData !== null && events !== null) {
+        settingData();
+    }
   }, [calendarData]);
   
+  useEffect(()=>{
+    console.log("fearCount",fearCount);
+  }, [fearCount]);
+
+  useEffect(()=>{
+    console.log("happyCount",happyCount);
+  }, [happyCount]);
+
+  useEffect(()=>{
+    console.log("angerCount",angerCount);
+  }, [angerCount]);
+  useEffect(()=>{
+    console.log("sadCount",sadCount);
+  }, [sadCount]);
+
   return (
     <div>
     {calendarData===undefined? <Loading/> :
@@ -207,10 +225,6 @@ const CalendarPage = () => {
                   verticalAlign="middle"
                   align="right"
                   iconSize={7}
-                  // payload={[
-                  //     { value: `남 ${manCount}%`, type: 'square', color: '#EB6927' },
-                  //     { value: `여 ${womanCount}%`, type: 'square', color: '#2D8CFF' },
-                  // ]}
                 />
                 <Pie
                   data={sexRatioData}
@@ -239,8 +253,8 @@ const CalendarPage = () => {
               style={{ width: "600px", height: "400px" }}
             ></ProgressBar>
             <ProgressBar></ProgressBar> */}
-            <ProgressBar availableItem={happyCount} barName={"행복지수"}></ProgressBar>
-            <ProgressBar availableItem={sadCount} barName={"우울지수"}></ProgressBar>
+            <ProgressBar availableItem={happyCount/(40*sum)*100} barName={"행복지수"}></ProgressBar>
+            <ProgressBar availableItem={sadCount/(40*sum)*100} barName={"우울지수"}></ProgressBar>
 
             
           </Right>
@@ -306,40 +320,35 @@ const CalendarPage = () => {
   );
 };
 export default CalendarPage;
+
 const Layout = styled.div`
   margin-top: 15px;
-  // border: 5px solid #ffcc5c;
   display: flex;
-  // height: 400px;
   color: ${(props) => props.theme.color.black};
-  // font-size: 3rem;
   font-weight: ${(props) => props.theme.fontWeight.semiBold};
   font-family: OmyuPretty;
 `;
+
 const Left = styled.div`
   background-color: #fff3da;
   border-radius: 30px;
   border: 30px solid #fff3da;
   width: 45%;
-  // padding:1%;
   margin-bottom: 1%;
   margin-right: 1%;
 `;
+
 const Right = styled.div`
   width: 45%;
   margin-bottom: 1%;
-  // padding:1%;
 `;
+
 const Title = styled.div`
   background-color: #ffedc7;
   border-radius: 10px;
   border: 10px solid #ffedc7;
   height: 5%;
   width: 90%;
-  // padding:1%;
   margin-bottom: 20%;
   margin-right: 1%;
-  // position:absolute;
-  // left:50%;
-  // transform:translate(-50%);
 `;

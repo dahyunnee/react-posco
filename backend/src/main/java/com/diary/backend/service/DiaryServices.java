@@ -1,6 +1,7 @@
 package com.diary.backend.service;
 
 import com.diary.backend.Enums.DiaryStatus;
+import com.diary.backend.common.CustomException;
 import com.diary.backend.dto.*;
 import com.diary.backend.entity.AnalysisEntity;
 import com.diary.backend.entity.DiaryEntity;
@@ -14,6 +15,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -26,6 +28,8 @@ import reactor.core.publisher.Mono;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.YearMonth;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -222,20 +226,26 @@ public class DiaryServices {
         return ResponseEntity.ok().body(diaryListDto);
     }
 
-    public ResponseEntity<?> getDiaryCalendarList(String userId, YearMonth searchMonth) {
+    public List<CalendarInfo> getDiaryCalendarList(String userId, YearMonth searchMonth) {
         UserEntity userEntity = userRepository.findByUserId(userId);
         if(userEntity == null){
-            return ResponseEntity.badRequest().body(DiaryStatus.INVALID_USER_ID);
+            throw new CustomException(HttpStatus.BAD_REQUEST, "유효한 사용자가 아닙니다.");
         }
-        CalendarInfoList calendarInfoList = new CalendarInfoList();
+        List<CalendarInfo> calendarList = new ArrayList<>();
         List<DiaryEntity> diaryEntityList = diaryRepository.findByAuthor(userRepository.findByUserId(userId));
+        diaryEntityList.sort(new Comparator<DiaryEntity>() {
+            @Override
+            public int compare(DiaryEntity o1, DiaryEntity o2) {
+                return o1.getWriteDate().compareTo(o2.getWriteDate());
+            }
+        });
         for(DiaryEntity diaryEntity : diaryEntityList){
             AnalysisEntity analysisEntity = analysisRepository.findByDiaryId(diaryEntity);
             EmotionEntity emotionEntity = emotionRepository.findByAnalysisId(analysisEntity);
             if(diaryEntity.getWriteDate().toLocalDateTime().getYear() != searchMonth.getYear() || diaryEntity.getWriteDate().toLocalDateTime().getMonth() != searchMonth.getMonth()){
                 continue;
             }
-            CalendarInfo samedayInfo = calendarInfoList.calendarList.stream()
+            CalendarInfo samedayInfo = calendarList.stream()
                     .filter(calendarInfo -> calendarInfo.writeDate.equals(diaryEntity.getWriteDate().toLocalDateTime().toLocalDate().toString()))
                     .findFirst()
                     .orElse(null);
@@ -259,9 +269,9 @@ public class DiaryServices {
             calendarInfo.happiness += emotionEntity.getHappiness();
             calendarInfo.disgust += emotionEntity.getDisgust();
 
-            calendarInfoList.calendarList.add(calendarInfo);
+            calendarList.add(calendarInfo);
         }
-        return ResponseEntity.ok().body(calendarInfoList);
+        return calendarList;
     }
 
     public ResponseEntity<?> getDiaryAnalysis(String userId, long diaryId) {
