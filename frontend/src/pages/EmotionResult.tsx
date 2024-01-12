@@ -15,7 +15,7 @@ function EmotionResult() {
     const [diaryData, setDiaryData] = useState<AnalysisInfoType>();
     useEffect(() => {
         const initPage = async () => {
-            const data = await getResultData("js7744", Number(diaryId));
+            const data = await getResultData(user.id, Number(diaryId));
             console.log(data);
             const newEmotionList = getEmotionList(data);
             setEmotionList(newEmotionList as { key: string; value: any; }[]);

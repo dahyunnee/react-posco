@@ -33,7 +33,7 @@ function DiaryPage() {
     const [diarySaveBodyType, setDiarySaveBodyType] = useState<DiarySaveBodyType>();
     const handleSaveBtnClick = async() =>{
     setDiarySaveBodyType({
-        userId: "js7744",
+        userId: user.id,
         date: getToday(),
         weather: weather,
         content: diaryContext,
