@@ -30,6 +30,7 @@ import { CalendarListType } from "../../types/calendar/calendarListType";
 import { CalendarEventType } from "../../types/calendar/calendarEventType";
 import { CalendarDataType } from "../../types/calendar/calendarDataType";
 import { getCalendarAction } from "../redux/modules/calendar";
+import {Loading} from "../components/common/Loading";
 // import { useNavigate } from "react-router-dom";
 
 // const data = [
@@ -102,7 +103,7 @@ const CalendarPage = () => {
       .then((res) => {
         console.log(res.data);
         setCalendarData(res.data);
-        console.log(calendarData);
+        settingData();
       })
 
       .catch((e) => {
@@ -156,7 +157,7 @@ const CalendarPage = () => {
           tempEvents.push({
             title: "📕",
             start: startDate,
-            end: new Date(endDate.setDate(endDate.getDate() + 3)),
+            end: new Date(endDate.setDate(endDate.getDate() + 1)),
             color: "pink",
             allDay: true,
           });
@@ -173,13 +174,20 @@ const CalendarPage = () => {
   useEffect(() => {
     getResultHandler()
     // .then(()=>{settingData()});
-    .then(() => setTimeout(()=>{
-        settingData()}, 1000));
+    // .then(() =>
+    //     settingData());
   }, []);
 
+  useEffect(() => {
+    settingData();
+  }, [calendarData]);
+  
   return (
+    <div>
+    {calendarData===undefined? <Loading/> :
     <Layout>
       <Left style={{ marginLeft: "50px" }}>
+        
         <FullCalendar
           plugins={[dayGridPlugin]}
           initialView="dayGridMonth"
@@ -234,34 +242,7 @@ const CalendarPage = () => {
             <ProgressBar availableItem={happyCount} barName={"행복지수"}></ProgressBar>
             <ProgressBar availableItem={sadCount} barName={"우울지수"}></ProgressBar>
 
-            {/* <div >
-                            <h1 style={{ marginBottom: '30px' }}>2023년도 사용자</h1>
-                            <PieChart width={400} height={300}>
-                                <Legend
-                                height={110}
-                                layout="vertical"
-                                verticalAlign="middle"
-                                align="right"
-                                iconSize={7}
-                                payload={[
-                                    { value: `남 ${manCount}%`, type: 'square', color: '#EB6927' },
-                                    { value: `여 ${womanCount}%`, type: 'square', color: '#2D8CFF' },
-                                ]}
-                                
-                                />
-                                <Pie
-                                data={sexRatioData}
-                                dataKey="value"
-                                nameKey="name"
-                                innerRadius={60}
-                                outerRadius={80}
-                                cx={80}
-                                cy={100}
-                                />
-
-                                <Tooltip />
-                            </PieChart>
-                        </div> */}
+            
           </Right>
         </div>
         <div style={{ display: "flex" }}>
@@ -320,7 +301,8 @@ const CalendarPage = () => {
           </Right>
         </div>
       </Right>
-    </Layout>
+    </Layout>}
+    </div>
   );
 };
 export default CalendarPage;
