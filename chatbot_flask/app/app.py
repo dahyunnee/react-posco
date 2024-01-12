@@ -145,19 +145,19 @@ def diaryEmotion():
                 logits = logits.detach().cpu().numpy()
 
                 if np.argmax(logits) == 0:
-                    result = "공포"
+                    result = "fear"
                 elif np.argmax(logits) == 1:
-                    result = "놀람"
+                    result = "surprised"
                 elif np.argmax(logits) == 2:
-                    result = "분노"
+                    result = "anger"
                 elif np.argmax(logits) == 3:
-                    result = "슬픔"
+                    result = "sadness"
                 elif np.argmax(logits) == 4:
-                    result = "중립"
+                    result = "neutrality"
                 elif np.argmax(logits) == 5:
-                    result = "행복"
+                    result = "happiness"
                 elif np.argmax(logits) == 6:
-                    result = "혐오"
+                    result = "disgust"
                 
                 emotions.append(result)
 
